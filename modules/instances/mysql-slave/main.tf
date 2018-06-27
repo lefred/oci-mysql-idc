@@ -1,8 +1,6 @@
 ## DATASOURCE
 # Init Script Files
-
 data "template_file" "install_slave" {
-  count    = "${var.number_of_slaves}"
   template = "${file("${path.module}/scripts/setup.sh")}"
 
   vars {
@@ -12,7 +10,8 @@ data "template_file" "install_slave" {
     replicate_acount    = "${var.replicate_acount}"
     replicate_password  = "${var.replicate_password}"
     private_key         = "${var.ssh_private_key}"
-    mysql_server_id     = "${count.index+1+3000}"
+
+    #mysql_server_id     = "${data.template_file.ad_names.rendered}"
   }
 }
 
@@ -67,7 +66,7 @@ resource "oci_core_instance" "TFMysqlSlave" {
 
     inline = [
       "chmod +x /tmp/setup_slave.sh",
-      "sudo /tmp/setup_slave.sh",
+      "sudo /tmp/setup_slave.sh ${count.index+1+3000}",
     ]
   }
 }

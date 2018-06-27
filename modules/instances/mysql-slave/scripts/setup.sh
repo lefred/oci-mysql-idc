@@ -6,6 +6,7 @@ set -e -x
 #replicate_acount="repl2"
 #replicate_password="Slaves@123"
 #master_public_ip="129.146.169.130"
+#mysql_server_id=$1
 
 function waitForMysql() {
     echo "Waiting for Mysql to launch on ${http_port}..."
@@ -20,7 +21,8 @@ function waitForMysql() {
 function getMysqlMasterStatus() {
   #sudo scp opc@${master_public_ip}:/tmp/master_mysql_status /tmp/master_mysql_status
   #mysqlstatus="$(sudo cat /tmp/master_mysql_status)"
-  mysqlstatus="$(ssh -oStrictHostKeyChecking=no -i ${private_key} opc@${master_public_ip} 'sudo cat /tmp/master_mysql_status')"
+  eval "$(jq -r '@sh "PRIVATE_KEY=\(.private_key) HOST=\(.master_public_ip)"')"
+  mysqlstatus="$(ssh -oStrictHostKeyChecking=no -i $PRIVATE_KEY opc@$HOST 'sudo cat /tmp/master_mysql_status')"
   #echo "$mysqlstatus" | awk -F ":" '{print $2}'
   delimeter1=':'
   temp1=`echo $mysqlstatus | cut -d "$delimeter1" -f 2`
@@ -90,7 +92,7 @@ sudo chmod 666 /etc/my.cnf
 
 #server-id=31
 #EOF
-command sudo echo "server-id=${mysql_server_id}" >>/etc/my.cnf
+command sudo echo "server-id=$1" >>/etc/my.cnf
 sudo chmod 644 /etc/my.cnf
 
 #Start mysql service
