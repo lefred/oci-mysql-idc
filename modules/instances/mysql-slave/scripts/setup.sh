@@ -21,10 +21,16 @@ function getMysqlMasterStatus() {
   #sudo scp opc@${master_public_ip}:/tmp/master_mysql_status /tmp/master_mysql_status
   #mysqlstatus="$(sudo cat /tmp/master_mysql_status)"
   mysqlstatus="$(ssh -oStrictHostKeyChecking=no -i ${private_key} opc@${master_public_ip} 'sudo cat /tmp/master_mysql_status')"
-  echo "${mysqlstatus}" | awk -F ":" '{print $2}'
-  delimeter=' '
-  master_log_filename=`echo $mysqlstatus | cut -d "$delimeter" -f 1`
-  master_log_fileposition=`echo $mysqlstatus | cut -d "$delimeter" -f 2`
+  #echo "$mysqlstatus" | awk -F ":" '{print $2}'
+  delimeter1=':'
+  temp1=`echo $mysqlstatus | cut -d "$delimeter1" -f 2`
+  temp2=`echo $mysqlstatus | cut -d "$delimeter1" -f 3`
+  delimeter2=' '
+  master_log_filename=`echo $temp1 | cut -d "$delimeter2" -f 1`
+  master_log_fileposition=`echo $temp2 | cut -d "$delimeter2" -f 1`
+
+  echo $master_log_fileposition
+  echo $master_log_filename
 }
 
 # Install Mysql
@@ -68,12 +74,12 @@ done
 
 #Connect to MySQL Master Host to get MySQL Status Infromation.
 getMysqlMasterStatus
-if [${master_log_filename} && ${master_log_fileposition}]; then
-  echo "MySQl Master Status File is:"
-  echo ${master_log_filename}
-  echo ${master_log_fileposition}
+if [ $master_log_filename ]&&[ $master_log_fileposition ]; then
+  echo "MySQl Master Status infromation(File and Postion):"
+  echo $master_log_filename
+  echo $master_log_fileposition
 else
-  echo "Can not get MySQL Master Status"
+  echo "Error: Can not get MySQL Master Status"
 fi
 
 #Config my.cnf on MySQL Slave to connect with the Master
@@ -96,7 +102,7 @@ mysql -uroot -p${mysql_root_password} <<EOF
 stop slave;
 EOF
 
-mysql -uroot -p${mysql_root_password} -e "change master to master_host='${master_public_ip}', master_user='${replicate_acount}', master_password='${replicate_password}',master_log_file='${master_log_filename}',master_log_pos=${master_log_fileposition};"
+mysql -uroot -p${mysql_root_password} -e "change master to master_host='${master_public_ip}', master_user='${replicate_acount}', master_password='${replicate_password}',master_log_file='$master_log_filename',master_log_pos=$master_log_fileposition;"
 mysql -uroot -p${mysql_root_password} <<EOF
 start slave;
 EOF

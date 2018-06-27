@@ -21,11 +21,3 @@ output "slave_public_ip" {
 output "slave_private_ips" {
   value = "${module.mysql-slave.private_ips}"
 }
-
-#output "master_login_info" {
-#  value = [
-#    "MySQL Master URL: http://${module.mysql-master.master_public_ip}:${var.http_port}",
-#    "Admin Initial Password: ${module.mysql-master.admin_init_password}",
-#  ]
-#}
-

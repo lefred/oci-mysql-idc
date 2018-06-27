@@ -1,28 +1,18 @@
 ## DATASOURCE
 # Init Script Files
-locals {
-  master_log_filename     = ""
-  master_log_fileposition = ""
-  mysqlstatus             = ""
-  delimeter               = ""
-}
 
 data "template_file" "install_slave" {
   count    = "${var.number_of_slaves}"
   template = "${file("${path.module}/scripts/setup.sh")}"
 
   vars {
-    master_public_ip        = "${var.master_public_ip}"
-    http_port               = "${var.http_port}"
-    mysql_root_password     = "${var.slaves_mysql_root_password}"
-    replicate_acount        = "${var.replicate_acount}"
-    replicate_password      = "${var.replicate_password}"
-    private_key             = "${var.ssh_private_key}"
-    mysql_server_id         = "${count.index+1+3000}"
-    master_log_filename     = "${local.master_log_filename}"
-    master_log_fileposition = "${local.master_log_fileposition}"
-    mysqlstatus             = "${local.mysqlstatus}"
-    delimeter               = "${local.delimeter}"
+    master_public_ip    = "${var.master_public_ip}"
+    http_port           = "${var.http_port}"
+    mysql_root_password = "${var.slaves_mysql_root_password}"
+    replicate_acount    = "${var.replicate_acount}"
+    replicate_password  = "${var.replicate_password}"
+    private_key         = "${var.ssh_private_key}"
+    mysql_server_id     = "${count.index+1+3000}"
   }
 }
 

@@ -20,9 +20,8 @@ function waitForMysql() {
 
 # Get the status of MySQL Master. File name and position in status will be used to initialize the Slave instance.
 function getMasterStatus() {
-  #`mysql -uroot -p${mysql_root_password} -e "show master status \G;"` >/tmp/master_mysql_status
-  master_mysql_status=`mysql -uroot -p${mysql_root_password} -e "show master status \G;”`
-  command sudo echo ${master_mysql_status} >/tmp/master_mysql_status
+  master_mysql_status=$(mysql -uroot -p${mysql_root_password} -s -e "show master status \G;")
+  command sudo echo $master_mysql_status >/tmp/master_mysql_status
 }
 
 # Install Mysql
@@ -92,6 +91,7 @@ mysql -uroot -p${mysql_root_password} -e "show grants for '${replicate_acount}'@
 mysql -uroot -p${mysql_root_password} <<EOF
 flush privileges;
 EOF
+sleep 5
 #flush tables with read lock;
 #unlock tables;
 

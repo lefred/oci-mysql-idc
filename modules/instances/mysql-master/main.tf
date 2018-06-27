@@ -13,7 +13,8 @@ data "template_file" "setup_mysql" {
     mysql_root_password = "${var.mysql_root_password}"
     replicate_acount    = "${var.replicate_acount}"
     replicate_password  = "${var.replicate_password}"
-    master_mysql_status = "${local.master_mysql_status}"
+
+    #master_mysql_status = "${local.master_mysql_status}"
   }
 }
 
