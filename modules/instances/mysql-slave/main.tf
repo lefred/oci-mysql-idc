@@ -40,7 +40,31 @@ resource "oci_core_instance" "TFMysqlSlave" {
     source_type = "image"
   }
 
+  provisioner "file" {
+    connection = {
+      host        = "${self.public_ip}"
+      user        = "opc"
+      private_key = "${file(var.ssh_private_key)}"
+    }
+
+    content     = "${file(var.ssh_private_key)}"
+    destination = "/tmp/key.pem"
+  }
+
   #Prepare files on slave node
+  provisioner "file" {
+    connection = {
+      host        = "${self.public_ip}"
+      agent       = false
+      timeout     = "5m"
+      user        = "opc"
+      private_key = "${file("${var.ssh_private_key}")}"
+    }
+
+    content     = "${data.template_file.install_slave.rendered}"
+    destination = "/tmp/setup_slave.sh"
+  }
+
   provisioner "file" {
     connection = {
       host        = "${self.public_ip}"

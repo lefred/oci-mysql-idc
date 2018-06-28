@@ -18,11 +18,26 @@ function waitForMysql() {
     echo "Mysql launched"
 }
 
+function forceToKillMysqld() {
+  MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
+  echo $MYSQLDID
+  echo "I am here"
+  if [ $MYSQLDID ]; then
+    for id in $MYSQLDID
+    do
+      if [ $id ]; then
+        sudo kill -9 $id
+        echo "killed $id"
+      fi
+    done
+  fi
+}
+
 function getMysqlMasterStatus() {
-  #sudo scp opc@${master_public_ip}:/tmp/master_mysql_status /tmp/master_mysql_status
-  #mysqlstatus="$(sudo cat /tmp/master_mysql_status)"
-  eval "$(jq -r '@sh "PRIVATE_KEY=\(.private_key) HOST=\(.master_public_ip)"')"
-  mysqlstatus="$(ssh -oStrictHostKeyChecking=no -i $PRIVATE_KEY opc@$HOST 'sudo cat /tmp/master_mysql_status')"
+  sudo chmod 0600 /tmp/key.pem
+  ssh -oStrictHostKeyChecking=no -i /tmp/key.pem opc@${master_public_ip} 'sudo cat /tmp/master_mysql_status' > /tmp/status
+  sleep 3
+  mysqlstatus=$(sudo cat /tmp/status)
   #echo "$mysqlstatus" | awk -F ":" '{print $2}'
   delimeter1=':'
   temp1=`echo $mysqlstatus | cut -d "$delimeter1" -f 2`
@@ -33,6 +48,9 @@ function getMysqlMasterStatus() {
 
   echo $master_log_fileposition
   echo $master_log_filename
+  while [ -f /tmp/key.pem ]; do
+    sudo rm /tmp/key.pem
+  done
 }
 
 # Install Mysql
@@ -70,6 +88,15 @@ sudo chown mysql /var/run/mysqld
 sudo mysqld --user=mysql --init-file=/tmp/passfile &
 sleep 5
 sudo mysqladmin -u root -p${mysql_root_password} shutdown
+sleep 5
+
+#MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
+#echo $MYSQLDID
+PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
+if [ $PSCOUNTER -ge 2 ]; then
+  forceToKillMysqld
+fi
+
 while [ -f /tmp/passfile ]; do
   sudo rm /tmp/passfile
 done

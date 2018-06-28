@@ -18,6 +18,21 @@ function waitForMysql() {
     echo "Mysql launched"
 }
 
+function forceToKillMysqld() {
+  MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
+  echo $MYSQLDID
+  echo "I am here"
+  if [ $MYSQLDID ]; then
+    for id in $MYSQLDID
+    do
+      if [ $id ]; then
+        sudo kill -9 $id
+        echo "killed $id"
+      fi
+    done
+  fi
+}
+
 # Get the status of MySQL Master. File name and position in status will be used to initialize the Slave instance.
 function getMasterStatus() {
   master_mysql_status=$(mysql -uroot -p${mysql_root_password} -s -e "show master status \G;")
@@ -60,6 +75,14 @@ sudo chown mysql /var/run/mysqld
 sudo mysqld --user=mysql --init-file=/tmp/passfile &
 sleep 5
 sudo mysqladmin -u root -p${mysql_root_password} shutdown
+sleep 5
+
+PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
+echo "$PSCOUNTER"
+if [ $PSCOUNTER -ge 2 ]; then
+  forceToKillMysqld
+fi
+
 while [ -f /tmp/passfile ]; do
   sudo rm /tmp/passfile
 done
