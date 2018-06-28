@@ -2,7 +2,7 @@
 # MySQL Master Instance
 ############################################
 module "mysql-master" {
-  source              = "./modules/instances/mysql-master"
+  source              = "./modules/mysql-master"
   number_of_master    = "${var.master_count}"
   availability_domain = "${var.master_ad}"
   compartment_ocid    = "${var.compartment_ocid}"
@@ -25,7 +25,7 @@ module "mysql-master" {
 # MySQL Slave Instance(s)
 ############################################
 module "mysql-slave" {
-  source               = "./modules/instances/mysql-slave"
+  source               = "./modules/mysql-slave"
   number_of_slaves     = "${var.slave_count}"
   availability_domains = "${var.slave_ads}"
   compartment_ocid     = "${var.compartment_ocid}"
