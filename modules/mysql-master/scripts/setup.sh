@@ -96,7 +96,7 @@ sudo chmod 666 /etc/my.cnf
 command sudo cat >>/etc/my.cnf <<'EOF'
 
 server-id=1
-log-bin=MysqlMaster-1
+log-bin=MysqlMaster
 auto_increment_offset=1
 EOF
 command sudo echo "auto_increment_increment=${number_of_master}" >>/etc/my.cnf
