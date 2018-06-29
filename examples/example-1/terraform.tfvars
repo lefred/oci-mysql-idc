@@ -4,11 +4,11 @@
 #fingerprint= "<PEM key fingerprint>"
 #private_key_path = "<path to the private key that matches the fingerprint above>"
 
-tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaaej42v3hufhtwz7ssrsynoslc7eunq2nrkepvqjhxj3dbxknnhhwa"
+tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaawgbzspd6cjovpmic7dahwbalg4opcbixgguo6z2s7t335m6lalbq"
 
-user_ocid = "ocid1.user.oc1..aaaaaaaat2vcfezpxdah2xckxgpannwtuhsl3llqr5gspiiuheuigt5lnevq"
+user_ocid = "ocid1.user.oc1..aaaaaaaazys5dvasatetxcee4t5teo2cttsjhpnws7qrldctqt375mlqvelq"
 
-fingerprint = "30:a1:c8:ff:6a:ac:b2:e3:59:e1:59:93:98:c7:ae:d1"
+fingerprint = "d3:45:3e:1f:e8:79:2b:1d:03:07:3a:2f:c2:99:1e:a2"
 
 private_key_path = "/Users/yupengshan/tools/OCI/oci_api_key.pem"
 
@@ -18,7 +18,7 @@ region = "us-phoenix-1"
 
 # Compartment
 #compartment_ocid = "<compartment OCID>"
-compartment_ocid = "ocid1.compartment.oc1..aaaaaaaajsuweibqc44mis7dcbdv6zempt55mw76o4wikea3sxblgjovhrya"
+compartment_ocid = "ocid1.compartment.oc1..aaaaaaaawzlfllc7kkf62dzkes75urrxfxppz5fjphx27a7k5fk5jnzvyhiq"
 
 #Instance Configration
 #ssh_authorized_keys = "<path to public key>"
@@ -30,9 +30,9 @@ ssh_authorized_keys = "/Users/yupengshan/.ssh/id_rsa.pub"
 
 ssh_private_key = "/Users/yupengshan/.ssh/id_rsa"
 
-master_subnet_id = "ocid1.subnet.oc1.phx.aaaaaaaak7gcdbgfu63ubm5aombrjiz4lxijyfyptbml6nurlx7r6hbywmdq"
+master_subnet_id = "ocid1.subnet.oc1.phx.aaaaaaaamdrtxxug7qv72cbwqhbw3sle3axq6irj26xapcg2fix7gsum6xoa"
 
-slave_subnet_ids = ["ocid1.subnet.oc1.phx.aaaaaaaak7gcdbgfu63ubm5aombrjiz4lxijyfyptbml6nurlx7r6hbywmdq", "ocid1.subnet.oc1.phx.aaaaaaaaxfzsvvciz7ocxtompl3jskoaenokffavnwsrbcls6dxvayhbpikq", "ocid1.subnet.oc1.phx.aaaaaaaaya26ajtg3kvb5ksqymaiiks34q7qeefgcnlw2xidjtik47ihwsfa"]
+slave_subnet_ids = ["ocid1.subnet.oc1.phx.aaaaaaaamdrtxxug7qv72cbwqhbw3sle3axq6irj26xapcg2fix7gsum6xoa", "ocid1.subnet.oc1.phx.aaaaaaaaaqvypodhwi5zpfspmuvu6s2sm2yzjy4fpzo4jau4vnzzwjh3476a", "ocid1.subnet.oc1.phx.aaaaaaaaats3obrnczlkkbnvhwzy6qc425iqo3mybvmh4eaikmw5r74ng35a"]
 
 #Set a initial MySQL password for the account 'root@localhost'
 #MySQL's validate_password plugin is installed by default.

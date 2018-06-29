@@ -8,16 +8,6 @@ set -e -x
 #replicate_password="Slaves@123"
 #master_mysql_status=
 
-function waitForMysql() {
-    echo "Waiting for Mysql to launch on ${http_port}..."
-
-    while ! timeout 1 bash -c "echo > /dev/tcp/localhost/${http_port}"; do
-      sleep 1
-    done
-
-    echo "Mysql launched"
-}
-
 function forceToKillMysqld() {
   MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
   echo $MYSQLDID
@@ -70,12 +60,11 @@ sudo chmod 644 /etc/my.cnf
 sudo echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';" >/tmp/passfile
 
 #Modify the root temporary password with a user-specified password
-#mysqladmin --defaults-file=etc/my.cnf --user=tom --password my_new_password
 sudo chown mysql /var/run/mysqld
 sudo mysqld --user=mysql --init-file=/tmp/passfile &
 sleep 5
 sudo mysqladmin -u root -p${mysql_root_password} shutdown
-sleep 5
+#sleep 5
 
 PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
 echo "$PSCOUNTER"
@@ -115,8 +104,6 @@ mysql -uroot -p${mysql_root_password} <<EOF
 flush privileges;
 EOF
 sleep 5
-#flush tables with read lock;
-#unlock tables;
 
 # Get MySQL Master status.
 #The file name and position will be used in the Slave instances.

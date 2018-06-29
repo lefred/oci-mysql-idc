@@ -3,20 +3,10 @@ set -e -x
 
 #mysql_root_password="Admin@123"
 #http_port=3306
-#replicate_acount="repl2"
+#replicate_acount="repl"
 #replicate_password="Slaves@123"
 #master_public_ip="129.146.169.130"
 #mysql_server_id=$1
-
-function waitForMysql() {
-    echo "Waiting for Mysql to launch on ${http_port}..."
-
-    while ! timeout 1 bash -c "echo > /dev/tcp/localhost/${http_port}"; do
-      sleep 1
-    done
-
-    echo "Mysql launched"
-}
 
 function forceToKillMysqld() {
   MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
@@ -88,10 +78,8 @@ sudo chown mysql /var/run/mysqld
 sudo mysqld --user=mysql --init-file=/tmp/passfile &
 sleep 5
 sudo mysqladmin -u root -p${mysql_root_password} shutdown
-sleep 5
+#sleep 5
 
-#MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
-#echo $MYSQLDID
 PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
 if [ $PSCOUNTER -ge 2 ]; then
   forceToKillMysqld
@@ -113,12 +101,11 @@ fi
 
 #Config my.cnf on MySQL Slave to connect with the Master
 #server-id should be an Integer number between 1 and 2^32 – 1
-#server-id should be different from any other server-ids in the same MySQL cluster
+#server-id should be different from any other server-ids in the same MySQL cluster.
+#---------Attention---------
+#In this program, the server-id of the Mysql Slave will begin with 3001
 sudo chmod 666 /etc/my.cnf
-#command sudo cat >>/etc/my.cnf <<'EOF'
 
-#server-id=31
-#EOF
 command sudo echo "server-id=$1" >>/etc/my.cnf
 sudo chmod 644 /etc/my.cnf
 
@@ -135,6 +122,15 @@ mysql -uroot -p${mysql_root_password} -e "change master to master_host='${master
 mysql -uroot -p${mysql_root_password} <<EOF
 start slave;
 EOF
+
+sleep 5
+
+mysql -u ${replicate_acount} -h ${master_public_ip} -p${replicate_password} -s -e "exit"
+if [ $? -ne 0 ]; then
+    echo "Failed! MySQL Slave can not connect to Master. Please check your network."
+else
+    echo "Succeed! MySQL Slave can connect to Master"
+fi
 
 sleep 5
 
