@@ -10,8 +10,7 @@ set -e -x
 
 function forceToKillMysqld() {
   MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
-  echo $MYSQLDID
-  echo "I am here"
+  echo "In the forceToKillMysqld function."
   if [ $MYSQLDID ]; then
     for id in $MYSQLDID
     do
@@ -20,6 +19,8 @@ function forceToKillMysqld() {
         echo "killed $id"
       fi
     done
+  else
+    echo "Mysqld has been stop by the mysqladmin command."
   fi
 }
 
@@ -36,8 +37,6 @@ function getMysqlMasterStatus() {
   master_log_filename=`echo $temp1 | cut -d "$delimeter2" -f 1`
   master_log_fileposition=`echo $temp2 | cut -d "$delimeter2" -f 1`
 
-  echo $master_log_fileposition
-  echo $master_log_filename
   while [ -f /tmp/key.pem ]; do
     sudo rm /tmp/key.pem
   done
@@ -78,7 +77,7 @@ sudo chown mysql /var/run/mysqld
 sudo mysqld --user=mysql --init-file=/tmp/passfile &
 sleep 5
 sudo mysqladmin -u root -p${mysql_root_password} shutdown
-#sleep 5
+sleep 5
 
 PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
 if [ $PSCOUNTER -ge 2 ]; then
@@ -96,7 +95,7 @@ if [ $master_log_filename ]&&[ $master_log_fileposition ]; then
   echo $master_log_filename
   echo $master_log_fileposition
 else
-  echo "Error: Can not get MySQL Master Status"
+  echo "Error: Can not get MySQL Master Status. Can not get status file"
 fi
 
 #Config my.cnf on MySQL Slave to connect with the Master

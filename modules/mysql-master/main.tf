@@ -1,9 +1,5 @@
 ## DATASOURCE
 # Init Script Files
-locals {
-  master_mysql_status = ""
-}
-
 data "template_file" "setup_mysql" {
   template = "${file("${path.module}/scripts/setup.sh")}"
 
@@ -13,8 +9,6 @@ data "template_file" "setup_mysql" {
     mysql_root_password = "${var.mysql_root_password}"
     replicate_acount    = "${var.replicate_acount}"
     replicate_password  = "${var.replicate_password}"
-
-    #master_mysql_status = "${local.master_mysql_status}"
   }
 }
 

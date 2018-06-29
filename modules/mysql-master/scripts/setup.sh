@@ -10,8 +10,7 @@ set -e -x
 
 function forceToKillMysqld() {
   MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
-  echo $MYSQLDID
-  echo "I am here"
+  echo "In the forceToKillMysqld function."
   if [ $MYSQLDID ]; then
     for id in $MYSQLDID
     do
@@ -20,6 +19,8 @@ function forceToKillMysqld() {
         echo "killed $id"
       fi
     done
+  else
+    echo "Mysqld has been stop by the mysqladmin command."
   fi
 }
 
@@ -64,11 +65,11 @@ sudo chown mysql /var/run/mysqld
 sudo mysqld --user=mysql --init-file=/tmp/passfile &
 sleep 5
 sudo mysqladmin -u root -p${mysql_root_password} shutdown
-#sleep 5
+sleep 5
 
 PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
-echo "$PSCOUNTER"
 if [ $PSCOUNTER -ge 2 ]; then
+  echo "The number of Mysqld active thread is $PSCOUNTER"
   forceToKillMysqld
 fi
 
