@@ -65,19 +65,6 @@ resource "oci_core_instance" "TFMysqlSlave" {
     destination = "/tmp/setup_slave.sh"
   }
 
-  provisioner "file" {
-    connection = {
-      host        = "${self.public_ip}"
-      agent       = false
-      timeout     = "5m"
-      user        = "opc"
-      private_key = "${file("${var.ssh_private_key}")}"
-    }
-
-    content     = "${data.template_file.install_slave.rendered}"
-    destination = "/tmp/setup_slave.sh"
-  }
-
   # Install slave
   provisioner "remote-exec" {
     connection = {
