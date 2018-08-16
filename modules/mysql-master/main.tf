@@ -64,7 +64,7 @@ resource "oci_core_instance" "TFMysqlMaster" {
   }
 
   timeouts {
-    #create = "10m"
-    create = "60m"
+    create = "10m"
+    #create = "60m"
   }
 }

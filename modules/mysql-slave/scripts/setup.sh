@@ -1,13 +1,6 @@
 #!/bin/bash
 set -e -x
 
-#mysql_root_password="Admin@123"
-#http_port=3306
-#replicate_acount="repl"
-#replicate_password="Slaves@123"
-#master_public_ip="129.146.169.130"
-#mysql_server_id=$1
-
 function forceToKillMysqld() {
   MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
   echo "In the forceToKillMysqld function."
@@ -29,7 +22,6 @@ function getMysqlMasterStatus() {
   ssh -oStrictHostKeyChecking=no -i /tmp/key.pem opc@${master_public_ip} 'sudo cat /tmp/master_mysql_status' > /tmp/status
   sleep 3
   mysqlstatus=$(sudo cat /tmp/status)
-  #echo "$mysqlstatus" | awk -F ":" '{print $2}'
   delimeter1=':'
   temp1=`echo $mysqlstatus | cut -d "$delimeter1" -f 2`
   temp2=`echo $mysqlstatus | cut -d "$delimeter1" -f 3`
@@ -39,6 +31,10 @@ function getMysqlMasterStatus() {
 
   while [ -f /tmp/key.pem ]; do
     sudo rm /tmp/key.pem
+  done
+
+  while [ -f /tmp/status ]; do
+    sudo rm /tmp/status
   done
 }
 
@@ -56,9 +52,10 @@ sudo firewall-cmd --reload
 
 #At the initial start-up of the server, the server is initializeda superuser
 #and account’root’@’localhost’ is created, when MySQL data directory is empty.
-sudo systemctl start mysqld.service
-sudo systemctl status mysqld.service
-sudo systemctl stop mysqld.service
+nohup sudo systemctl start mysqld.service
+nohup sudo systemctl status mysqld.service
+nohup sudo systemctl stop mysqld.service
+
 echo "MySQL installed successfully!"
 
 #Add user mysql in my.cnf to modify generated temporary password of 'root@localhose'
