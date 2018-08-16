@@ -112,17 +112,6 @@ variable "http_port" {
   default     = 3306
 }
 
-variable "jnlp_port" {
-  description = "The Port to use for MySQL master to slave communication bewtween instances. "
-  default     = 3306
-}
-
-variable "plugins" {
-  type        = "list"
-  description = "A list of MySQL plugins to install, use short names. "
-  default     = ["git", "ssh-slaves", "oracle-cloud-infrastructure-compute"]
-}
-
 variable "slaves_mysql_root_password" {
   description = "Password of the MySQL 'root@localhost' account in the Slaves Instance."
   default     = ""
