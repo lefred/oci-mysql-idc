@@ -1,5 +1,5 @@
-## Create VCN and Deploy Mysql Cluster
-This example creates a VCN in Oracle Cloud Infrastructure including default route table, DHCP options, security list and subnets from scratch, then use terraform_oci_mysql module to deploy a Mysql cluster.
+## Create VCN and Deploy MySQL Replication Cluster
+This example creates a VCN in Oracle Cloud Infrastructure including default route table, DHCP options, security list and subnets from scratch, then use terraform_oci_mysql module to deploy a MySQL Replication Cluster.
 
 ### Using this example
 Update terraform.tfvars with the required information.
@@ -13,7 +13,7 @@ View what Terraform plans do before actually doing it:
 ```
 $ terraform plan
 ```
-Use Terraform to Provision resources and Mysql cluster on OCI:
+Use Terraform to Provision resources and MySQL Replication Cluster on OCI:
 ```
 $ terraform apply
 ```
