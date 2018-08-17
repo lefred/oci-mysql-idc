@@ -93,6 +93,6 @@ func validateBySSHToSlaveHost(t *testing.T, terraform_options *terraform.Options
 	for i := 0; i < len(public_ips); i++ {
 		ip := strings.TrimSpace(public_ips[i])
 		result := test_helper.SSHToHost(t, ip, "opc", key_pair, command)
-		assert.True(t, strings.Contains(result, "Slave_IO_Running: Yes"))
+		assert.True(t, strings.Contains(result, "Slave_SQL_Running: Yes"))
 	}
 }
