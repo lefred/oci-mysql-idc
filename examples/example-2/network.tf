@@ -57,8 +57,8 @@ resource "oci_core_security_list" "MysqlMasterSubnet" {
   },
     {
       tcp_options {
-        "max" = "${var.http_port}"
-        "min" = "${var.http_port}"
+        "max" = "3306"
+        "min" = "3306"
       }
 
       protocol = "6"

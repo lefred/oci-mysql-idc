@@ -1,15 +1,19 @@
 ## DATASOURCE
 # Init Script Files
 data "template_file" "setup_mysql" {
-  template = "${file("${path.module}/scripts/setup.sh")}"
+  template = "${file("${path.module}/scripts/setup_replicate_master.sh")}"
 
   vars {
-    http_port           = "${var.http_port}"
+    #http_port           = "${var.http_port}"
     number_of_master    = "${var.number_of_master}"
     mysql_root_password = "${var.mysql_root_password}"
     replicate_acount    = "${var.replicate_acount}"
     replicate_password  = "${var.replicate_password}"
   }
+}
+
+locals {
+  setup_script_dest = "~/setup_replicate_master.sh"
 }
 
 ## MYSQL MASTER INSTANCE
@@ -45,7 +49,7 @@ resource "oci_core_instance" "TFMysqlMaster" {
     }
 
     content     = "${data.template_file.setup_mysql.rendered}"
-    destination = "/tmp/setup.sh"
+    destination = "${local.setup_script_dest}"
   }
 
   provisioner "remote-exec" {
@@ -58,13 +62,14 @@ resource "oci_core_instance" "TFMysqlMaster" {
     }
 
     inline = [
-      "chmod +x /tmp/setup.sh",
-      "sudo /tmp/setup.sh",
+      "chmod +x ${local.setup_script_dest}",
+      "sudo ${local.setup_script_dest}",
     ]
   }
 
   timeouts {
     create = "10m"
+
     #create = "60m"
   }
 }

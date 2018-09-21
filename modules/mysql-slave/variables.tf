@@ -56,9 +56,9 @@ variable "master_public_ip" {
   description = "Public IP of the Master Instance where the MySQL Master is installed."
 }
 
-variable "http_port" {
-  description = "The port to use for HTTP traffic to Mysql."
-}
+# variable "http_port" {
+#   description = "The port to use for HTTP traffic to Mysql."
+# }
 
 variable "slaves_mysql_root_password" {
   description = "Password of the MySQL 'root@localhost' account in the Slave Instance."

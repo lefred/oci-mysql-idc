@@ -1,18 +1,22 @@
 ## DATASOURCE
 # Init Script Files
 data "template_file" "install_slave" {
-  template = "${file("${path.module}/scripts/setup.sh")}"
+  template = "${file("${path.module}/scripts/setup_replicate_slave.sh")}"
 
   vars {
-    master_public_ip    = "${var.master_public_ip}"
-    http_port           = "${var.http_port}"
+    master_public_ip = "${var.master_public_ip}"
+
+    #http_port           = "${var.http_port}"
     mysql_root_password = "${var.slaves_mysql_root_password}"
     replicate_acount    = "${var.replicate_acount}"
     replicate_password  = "${var.replicate_password}"
     private_key         = "${var.ssh_private_key}"
-
-    #mysql_server_id     = "${data.template_file.ad_names.rendered}"
   }
+}
+
+locals {
+  mysql_keyfile_dest = "~/mysql_keyfile"
+  setup_script_dest  = "~/setup_replicate_slave.sh"
 }
 
 # MYSQL Slaves
@@ -47,8 +51,10 @@ resource "oci_core_instance" "TFMysqlSlave" {
       private_key = "${file(var.ssh_private_key)}"
     }
 
-    content     = "${file(var.ssh_private_key)}"
-    destination = "/tmp/key.pem"
+    content = "${file(var.ssh_private_key)}"
+
+    #destination = "/tmp/key.pem"
+    destination = "${local.mysql_keyfile_dest}"
   }
 
   #Prepare files on slave node
@@ -62,7 +68,7 @@ resource "oci_core_instance" "TFMysqlSlave" {
     }
 
     content     = "${data.template_file.install_slave.rendered}"
-    destination = "/tmp/setup_slave.sh"
+    destination = "${local.setup_script_dest}"
   }
 
   # Install slave
@@ -76,8 +82,8 @@ resource "oci_core_instance" "TFMysqlSlave" {
     }
 
     inline = [
-      "chmod +x /tmp/setup_slave.sh",
-      "sudo /tmp/setup_slave.sh ${count.index+1+3000}",
+      "chmod +x ${local.setup_script_dest}",
+      "sudo ${local.setup_script_dest} ${count.index+1+3000}",
     ]
   }
 }

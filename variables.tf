@@ -67,14 +67,16 @@ variable "master_user_data" {
   default     = ""
 }
 
-variable "master_count" {
+variable "replicate_master_count" {
   description = "Number of master instances to launch. "
-  default     = 1
+
+  #default     = 1
 }
 
-variable "slave_count" {
+variable "replicate_slave_count" {
   description = "Number of slave instances to launch. "
-  default     = 2
+
+  #default     = 2
 }
 
 variable "slave_ads" {
@@ -107,10 +109,10 @@ variable "slave_user_data" {
   default     = ""
 }
 
-variable "http_port" {
-  description = "The port to use for HTTP traffic to MySQL. "
-  default     = 3306
-}
+# variable "http_port" {
+#   description = "The port to use for HTTP traffic to MySQL. "
+#   default     = 3306
+# }
 
 variable "slaves_mysql_root_password" {
   description = "Password of the MySQL 'root@localhost' account in the Slaves Instance."

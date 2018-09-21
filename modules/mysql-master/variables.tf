@@ -51,9 +51,9 @@ variable "user_data" {
   description = "A User Data script to execute while the server is booting."
 }
 
-variable "http_port" {
-  description = "The port to use for HTTP traffic to Mysql"
-}
+# variable "http_port" {
+#   description = "The port to use for HTTP traffic to Mysql"
+# }
 
 variable "number_of_master" {
   description = "The number of master instance(s) to create"

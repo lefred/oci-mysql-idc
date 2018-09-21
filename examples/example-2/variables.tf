@@ -12,6 +12,16 @@ variable "slaves_mysql_root_password" {}
 variable "master_slaves_replicate_acount" {}
 variable "master_slaves_replicate_password" {}
 
+variable "replicate_master_count" {
+  description = "Number of master instances to launch. "
+  default     = 1
+}
+
+variable "replicate_slave_count" {
+  description = "Number of slave instances to launch. "
+  default     = 2
+}
+
 variable "network_cidrs" {
   type = "map"
 
@@ -41,7 +51,8 @@ variable "image_id" {
   }
 }
 
-variable "http_port" {
-  description = "The port to use for HTTP traffic to MySQL."
-  default     = 3306
-}
+# variable "http_port" {
+#   description = "The port to use for HTTP traffic to MySQL."
+#   default     = 3306
+# }
+
