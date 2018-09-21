@@ -1,28 +1,18 @@
 #!/bin/bash
 set -e -x
 
-function forceToKillMysqld() {
-  MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
-  echo "In the forceToKillMysqld function."
-  if [ $MYSQLDID ]; then
-    for id in $MYSQLDID
-    do
-      if [ $id ]; then
-        sudo kill -9 $id
-        echo "killed $id"
-      fi
-    done
-  else
-    echo "Mysqld has been stop by the mysqladmin command."
-  fi
-}
+#number_of_master=1
+#mysql_root_password="Admin@123"
+#replicate_acount="repl"
+#replicate_password="Slave@123"
+
+
 
 # Get the status of MySQL Master. File name and position in status will be used to initialize the Slave instance.
 function getMasterStatus() {
   master_mysql_status=$(mysql -uroot -p${mysql_root_password} -s -e "show master status \G;")
-  command sudo echo $master_mysql_status >~/master_mysql_status
+  command sudo echo $master_mysql_status >/home/opc/master_mysql_status
 }
-
 
 # Install Mysql
 # Using Latest version： https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
@@ -40,41 +30,30 @@ sudo firewall-cmd --reload
 #and account’root’@’localhost’ is created, when MySQL data directory is empty.
 nohup sudo systemctl start mysqld.service
 nohup sudo systemctl status mysqld.service
-nohup sudo systemctl stop mysqld.service
+##nohup sudo systemctl stop mysqld.service
 
 echo "MySQL installed successfully!"
 
-#Add user mysql in my.cnf to modify generated temporary password of 'root@localhose'
 sudo chmod 666 /etc/my.cnf
 command sudo cat >>/etc/my.cnf <<'EOF'
 
-user=mysql
+skip-grant-tables
 EOF
 sudo chmod 644 /etc/my.cnf
 
-#Make a temporary file to save the mysql alter user statement
-sudo echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';" > ~/passfile
+sudo systemctl restart mysqld.service
 
-#Modify the root temporary password with a user-specified password
-sudo chown mysql /var/run/mysqld
-sudo mysqld --user=mysql --init-file=~/passfile &
-sleep 5
-sudo mysqladmin -u root -p${mysql_root_password} shutdown
-sleep 5
+mysql <<EOF
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Admin@1234';
+EOF
 
-PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
-if [ $PSCOUNTER -ge 2 ]; then
-  echo "The number of Mysqld active thread is $PSCOUNTER"
-  forceToKillMysqld
-fi
+sudo systemctl stop mysqld.service
 
-while [ -f ~/passfile ]; do
-  sudo rm ~/passfile
-done
+##delete the last row
+sudo sed -i '$d' /etc/my.cnf
 
-#Config my.cnf on MySQL Server Master INSTANCE
-#server-id should be an Integer number between 1 and 2^32 – 1
-#server-id should be different from any other server-ids in the same MySQL cluster
+
 sudo chmod 666 /etc/my.cnf
 command sudo cat >>/etc/my.cnf <<'EOF'
 
@@ -88,6 +67,10 @@ sudo chmod 644 /etc/my.cnf
 #Start mysql service
 sudo systemctl start mysqld.service
 echo "MySQL started successfully."
+
+mysql -uroot -pAdmin@1234 -e "SET sql_log_bin=OFF;"
+mysql -uroot -pAdmin@1234 -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';"
+mysql -uroot -p${mysql_root_password} -e "SET sql_log_bin=ON;"
 
 #Execute the MySQL statement
 mysql -uroot -p${mysql_root_password} -e "CREATE USER '${replicate_acount}'@'%' IDENTIFIED BY '${replicate_password}';"

@@ -1,27 +1,17 @@
 #!/bin/bash
 set -e -x
 
-function forceToKillMysqld() {
-  MYSQLDID=`ps -ef | grep "mysqld" | grep -v "opc" | awk '{print $2}'`
-  echo "In the forceToKillMysqld function."
-  if [ $MYSQLDID ]; then
-    for id in $MYSQLDID
-    do
-      if [ $id ]; then
-        sudo kill -9 $id
-        echo "killed $id"
-      fi
-    done
-  else
-    echo "Mysqld has been stop by the mysqladmin command."
-  fi
-}
+
 
 function getMysqlMasterStatus() {
-  sudo chmod 0600 ~/mysql_keyfile
-  ssh -oStrictHostKeyChecking=no -i ~/mysql_keyfile opc@${master_public_ip} 'sudo cat ~/master_mysql_status' > ~/status
+  base_dir="/home/opc"
+  keyfile="mysql_keyfile"
+  statusfile="master_status"
+
+  sudo chmod 0600 $base_dir/$keyfile
+  ssh -oStrictHostKeyChecking=no -i $base_dir/$keyfile opc@${master_public_ip} 'sudo cat ~/master_mysql_status' >/home/opc/master_status
   sleep 3
-  mysqlstatus=$(sudo cat ~/status)
+  mysqlstatus=$(sudo cat $base_dir/$statusfile)
   delimeter1=':'
   temp1=`echo $mysqlstatus | cut -d "$delimeter1" -f 2`
   temp2=`echo $mysqlstatus | cut -d "$delimeter1" -f 3`
@@ -29,12 +19,12 @@ function getMysqlMasterStatus() {
   master_log_filename=`echo $temp1 | cut -d "$delimeter2" -f 1`
   master_log_fileposition=`echo $temp2 | cut -d "$delimeter2" -f 1`
 
-  while [ -f ~/mysql_keyfile ]; do
-    sudo rm ~/mysql_keyfile
+  while [ -f $base_dir/$keyfile ]; do
+    sudo rm $base_dir/$keyfile
   done
 
-  while [ -f ~/status ]; do
-    sudo rm ~/status
+  while [ -f $base_dir/$master_status ]; do
+    sudo rm $base_dir/$master_status
   done
 }
 
@@ -54,38 +44,36 @@ sudo firewall-cmd --reload
 #and account’root’@’localhost’ is created, when MySQL data directory is empty.
 nohup sudo systemctl start mysqld.service
 nohup sudo systemctl status mysqld.service
-nohup sudo systemctl stop mysqld.service
 
 echo "MySQL installed successfully!"
 
-#Add user mysql in my.cnf to modify generated temporary password of 'root@localhose'
 sudo chmod 666 /etc/my.cnf
 command sudo cat >>/etc/my.cnf <<'EOF'
 
-user=mysql
+skip-grant-tables
 EOF
 sudo chmod 644 /etc/my.cnf
 
-#Make a temporary file to save the mysql alter user statement
+sudo systemctl restart mysqld.service
 
-#sudo echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';" > ~/passfile
-sudo echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';" >/home/opc/mysqlpassfile
+mysql <<EOF
+FLUSH PRIVILEGES;
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Admin@1234';
+EOF
 
-#Modify the root temporary password with a user-specified password
-sudo chown mysql /var/run/mysqld
-sudo mysqld --user=mysql --init-file=~/mysqlpassfile &
-sleep 5
-sudo mysqladmin -u root -p${mysql_root_password} shutdown
-sleep 5
+sudo systemctl stop mysqld.service
 
-PSCOUNTER=`ps -ef | grep "mysqld" | wc -l`
-if [ $PSCOUNTER -ge 2 ]; then
-  forceToKillMysqld
-fi
+##delete the last row
+sudo sed -i '$d' /etc/my.cnf
 
-while [ -f ~/mysqlpassfile ]; do
-  sudo rm ~/mysqlpassfile
-done
+sudo systemctl start mysqld.service
+echo "MySQL started successfully."
+
+mysql -uroot -pAdmin@1234 -e "SET sql_log_bin=OFF;"
+mysql -uroot -pAdmin@1234 -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';"
+mysql -uroot -p${mysql_root_password} -e "SET sql_log_bin=ON;"
+sudo systemctl stop mysqld.service
+
 
 #Connect to MySQL Master Host to get MySQL Status Infromation.
 getMysqlMasterStatus
