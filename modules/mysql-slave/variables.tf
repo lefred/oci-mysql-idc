@@ -1,4 +1,4 @@
-# OCI service
+# Oracle Cloud Infrastructure service
 variable "compartment_ocid" {
   description = "Compartment's OCID where VCN will be created."
 }

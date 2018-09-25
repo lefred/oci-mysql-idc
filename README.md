@@ -2,14 +2,14 @@
 
 
 ## About
-The MySQL Oracle Cloud Infrastructure Module provides a Terraform-based MySQL Replication Cluster installation for Oracle Cloud Infrastructure (OCI). Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves). A MySQL Replication Cluster typically involves one or more master instance(s) coupled with one or more slave instance(s).
+The MySQL Oracle Cloud Infrastructure Module provides a Terraform-based MySQL Replication Cluster installation for Oracle Cloud Infrastructure. Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves). A MySQL Replication Cluster typically involves one or more master instance(s) coupled with one or more slave instance(s).
 
 ![MySQL architecture](docs/images/architecture.png)
 
 ## Prerequisites
 1. Download and install Terraform (v0.10.3 or later)
-2. Download and install the OCI Terraform Provider (v2.0.0 or later)
-3. Export OCI credentials. (this refer to the https://github.com/oracle/terraform-provider-oci )
+2. Download and install the Oracle Cloud Infrastructure Terraform Provider (v2.0.0 or later)
+3. Export Oracle Cloud Infrastructure credentials. (this refer to the https://github.com/oracle/terraform-provider-oci )
 
 
 ## What's a Module?
@@ -18,10 +18,10 @@ Instead of figuring out the details of how to run a piece of infrastructure from
 
 ## How to use this Module
 Each Module has the following folder structure:
-* [root](): This folder contains a root module calls mysql-master and mysql-slave sub-modules to create a MySQL cluster in OCI.
+* [root](): This folder contains a root module calls mysql-master and mysql-slave sub-modules to create a MySQL cluster in Oracle Cloud Infrastructure.
 * [modules](): This folder contains the reusable code for this Module, broken down into one or more modules.
 * [examples](): This folder contains examples of how to use the modules.
-  - [example-1](examples/example-1): This is an example of how to use the terraform_oci_mysql module to deploy a MySQL cluster in OCI by using an existing VCN, Security list and Subnets.
+  - [example-1](examples/example-1): This is an example of how to use the terraform_oci_mysql module to deploy a MySQL cluster in Oracle Cloud Infrastructure by using an existing VCN, Security list and Subnets.
   - [example-2](examples/example-2): This example creates a VCN in Oracle Cloud Infrastructure including default route table, DHCP options, security list and subnets from scratch, then use terraform_oci_mysql module to deploy a MySQL cluster.
 
 To deploy MySQL Replication Cluster using this Module:

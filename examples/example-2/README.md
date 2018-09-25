@@ -13,7 +13,7 @@ View what Terraform plans do before actually doing it:
 ```
 $ terraform plan
 ```
-Use Terraform to Provision resources and MySQL Replication Cluster on OCI:
+Use Terraform to Provision resources and MySQL Replication Cluster on Oracle Cloud Infrastructure:
 ```
 $ terraform apply
 ```
