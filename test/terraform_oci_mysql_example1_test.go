@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestModuleMysqlExample2(t *testing.T) {
+func TestModuleMysqlExample1(t *testing.T) {
 	terraform_dir := "../examples/example-1"
 	terraform_options := configureTerraformOptions(t, terraform_dir)
 
