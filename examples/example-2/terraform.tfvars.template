@@ -14,15 +14,19 @@ private_key_path = "/Users/yupengshan/tools/OCI/oci_api_key.pem"
 region = "us-phoenix-1"
 
 # Compartment
-#compartment_ocid = "<compartment OCID>"
+##compartment_ocid = "<compartment OCID>"
 compartment_ocid = "ocid1.compartment.oc1..aaaaaaaawzlfllc7kkf62dzkes75urrxfxppz5fjphx27a7k5fk5jnzvyhiq"
 
 # Instance Configration
 ##ssh_authorized_keys = "<path to public key>"
 ##ssh_private_key = "<path to private key>"
+##bastion_authorized_keys = "<path to bastion host public key>"
+##bastion_private_key = "<path to bastion host private key>"
 
 ssh_authorized_keys = "/Users/yupengshan/.ssh/id_rsa.pub"
 ssh_private_key = "/Users/yupengshan/.ssh/id_rsa"
+bastion_authorized_keys = "/Users/yupengshan/.ssh/id_rsa.pub"
+bastion_private_key = "/Users/yupengshan/.ssh/id_rsa"
 
 # MySQL Configration
 #Set a initial MySQL password for the account 'root@localhost'

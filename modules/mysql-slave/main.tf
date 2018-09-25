@@ -4,7 +4,9 @@ data "template_file" "install_slave" {
   template = "${file("${path.module}/scripts/setup_replicate_slave.sh")}"
 
   vars {
-    master_public_ip = "${var.master_public_ip}"
+    # master_public_ip = "${var.master_public_ip}"
+    master_private_ip = "${var.master_private_ip}"
+    bastion_host      = "${var.bastion_host}"
 
     #http_port           = "${var.http_port}"
     mysql_root_password = "${var.slaves_mysql_root_password}"
@@ -29,9 +31,11 @@ resource "oci_core_instance" "TFMysqlSlave" {
   shape          = "${var.shape}"
 
   create_vnic_details {
-    subnet_id        = "${var.subnet_ids[count.index%length(var.subnet_ids)]}"
-    display_name     = "${var.label_prefix}${var.slave_display_name}-${count.index+1}"
-    assign_public_ip = true
+    subnet_id    = "${var.subnet_ids[count.index%length(var.subnet_ids)]}"
+    display_name = "${var.label_prefix}${var.slave_display_name}-${count.index+1}"
+
+    # assign_public_ip = true
+    assign_public_ip = "${var.assign_public_ip}"
     hostname_label   = "${var.slave_display_name}-${count.index+1}"
   }
 
@@ -46,9 +50,15 @@ resource "oci_core_instance" "TFMysqlSlave" {
 
   provisioner "file" {
     connection = {
-      host        = "${self.public_ip}"
+      host        = "${self.private_ip}"
+      agent       = false
+      timeout     = "5m"
       user        = "opc"
       private_key = "${file(var.ssh_private_key)}"
+
+      bastion_host        = "${var.bastion_host}"
+      bastion_user        = "${var.bastion_user}"
+      bastion_private_key = "${file("${var.bastion_private_key}")}"
     }
 
     content = "${file(var.ssh_private_key)}"
@@ -60,11 +70,15 @@ resource "oci_core_instance" "TFMysqlSlave" {
   #Prepare files on slave node
   provisioner "file" {
     connection = {
-      host        = "${self.public_ip}"
+      host        = "${self.private_ip}"
       agent       = false
       timeout     = "5m"
       user        = "opc"
       private_key = "${file("${var.ssh_private_key}")}"
+
+      bastion_host        = "${var.bastion_host}"
+      bastion_user        = "${var.bastion_user}"
+      bastion_private_key = "${file("${var.bastion_private_key}")}"
     }
 
     content     = "${data.template_file.install_slave.rendered}"
@@ -74,16 +88,24 @@ resource "oci_core_instance" "TFMysqlSlave" {
   # Install slave
   provisioner "remote-exec" {
     connection = {
-      host        = "${self.public_ip}"
+      host        = "${self.private_ip}"
       agent       = false
       timeout     = "5m"
       user        = "opc"
       private_key = "${file("${var.ssh_private_key}")}"
+
+      bastion_host        = "${var.bastion_host}"
+      bastion_user        = "${var.bastion_user}"
+      bastion_private_key = "${file("${var.bastion_private_key}")}"
     }
 
     inline = [
       "chmod +x ${local.setup_script_dest}",
       "sudo ${local.setup_script_dest} ${count.index+1+3000}",
     ]
+  }
+
+  timeouts {
+    create = "10m"
   }
 }

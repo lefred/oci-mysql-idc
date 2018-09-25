@@ -70,3 +70,16 @@ variable "replicate_acount" {
 variable "replicate_password" {
   description = "Password of the MySQL 'master_slaves_replicate_acount@%' account"
 }
+
+variable "bastion_host" {
+  description = "The bastion host IP."
+}
+
+variable "bastion_user" {
+  description = "The SSH user to connect to the bastion host."
+  default     = "opc"
+}
+
+variable "bastion_private_key" {
+  description = "The private key path to access the bastion host."
+}

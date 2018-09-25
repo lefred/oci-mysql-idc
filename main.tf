@@ -20,6 +20,10 @@ module "mysql-replication-master" {
   ssh_authorized_keys = "${var.ssh_authorized_keys}"
   ssh_private_key     = "${var.ssh_private_key}"
   user_data           = "${var.master_user_data}"
+
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
 }
 
 ############################################
@@ -37,11 +41,15 @@ module "mysql-replication-slave" {
   subnet_ids           = "${var.slave_subnet_ids}"
 
   #http_port            = "${var.http_port}"
-  master_public_ip = "${module.mysql-replication-master.public_ip}"
+  master_private_ip = "${module.mysql-replication-master.private_ip}"
 
   ssh_authorized_keys        = "${var.ssh_authorized_keys}"
   ssh_private_key            = "${var.ssh_private_key}"
   slaves_mysql_root_password = "${var.slaves_mysql_root_password}"
   replicate_acount           = "${var.master_slaves_replicate_acount}"
   replicate_password         = "${var.master_slaves_replicate_password}"
+
+  bastion_host        = "${var.bastion_host}"
+  bastion_user        = "${var.bastion_user}"
+  bastion_private_key = "${var.bastion_private_key}"
 }

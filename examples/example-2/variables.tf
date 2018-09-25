@@ -56,3 +56,29 @@ variable "image_id" {
 #   default     = 3306
 # }
 
+variable "vcn_cidr" {
+  default = "10.0.0.0/16"
+}
+
+variable "bastion_display_name" {
+  default = "bastion"
+}
+
+variable "bastion_shape" {
+  default = "VM.Standard1.1"
+}
+
+variable "bastion_host" {
+  default = ""
+}
+
+variable "bastion_user" {
+  default = "opc"
+}
+
+variable "bastion_authorized_keys" {}
+variable "bastion_private_key" {}
+
+variable "bastion_ad_index" {
+  default = 0
+}

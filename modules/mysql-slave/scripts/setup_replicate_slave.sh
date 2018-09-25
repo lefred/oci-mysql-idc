@@ -9,7 +9,7 @@ function getMysqlMasterStatus() {
   statusfile="master_status"
 
   sudo chmod 0600 $base_dir/$keyfile
-  ssh -oStrictHostKeyChecking=no -i $base_dir/$keyfile opc@${master_public_ip} 'sudo cat ~/master_mysql_status' >/home/opc/master_status
+  ssh -oStrictHostKeyChecking=no -i $base_dir/$keyfile opc@${master_private_ip} 'sudo cat ~/master_mysql_status' >/home/opc/master_status
   sleep 3
   mysqlstatus=$(sudo cat $base_dir/$statusfile)
   delimeter1=':'
@@ -30,6 +30,8 @@ function getMysqlMasterStatus() {
 
 # Install Mysql
 # Using Latest version： https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+echo "-------bastion_public_ip--------"
+echo "$bastion_host"
 sudo wget -O /etc/yum.repos.d/mysql.rpm https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
 cd /etc/yum.repos.d
 sudo rpm -Uvh mysql.rpm
@@ -104,14 +106,14 @@ mysql -uroot -p${mysql_root_password} <<EOF
 stop slave;
 EOF
 
-mysql -uroot -p${mysql_root_password} -e "change master to master_host='${master_public_ip}', master_user='${replicate_acount}', master_password='${replicate_password}',master_log_file='$master_log_filename',master_log_pos=$master_log_fileposition;"
+mysql -uroot -p${mysql_root_password} -e "change master to master_host='${master_private_ip}', master_user='${replicate_acount}', master_password='${replicate_password}',master_log_file='$master_log_filename',master_log_pos=$master_log_fileposition;"
 mysql -uroot -p${mysql_root_password} <<EOF
 start slave;
 EOF
 
 sleep 5
 
-mysql -u ${replicate_acount} -h ${master_public_ip} -p${replicate_password} -s -e "exit"
+mysql -u ${replicate_acount} -h ${master_private_ip} -p${replicate_password} -s -e "exit"
 if [ $? -ne 0 ]; then
     echo "Failed! MySQL Slave can not connect to Master. Please check your network."
 else

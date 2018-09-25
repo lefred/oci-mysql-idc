@@ -118,3 +118,16 @@ variable "slaves_mysql_root_password" {
   description = "Password of the MySQL 'root@localhost' account in the Slaves Instance."
   default     = ""
 }
+
+variable "bastion_host" {
+  description = "The bastion host IP."
+}
+
+variable "bastion_user" {
+  description = "The SSH user to connect to the bastion host."
+  default     = "opc"
+}
+
+variable "bastion_private_key" {
+  description = "The private key path to access the bastion host."
+}
