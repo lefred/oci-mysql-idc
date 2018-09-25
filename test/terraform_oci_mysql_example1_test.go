@@ -31,10 +31,10 @@ func TestModuleMysqlExample1(t *testing.T) {
 		validateSolution(t, terraform_options)
 	})
 
-	// defer test_structure.RunTestStage(t, "destroy", func() {
-	// 	logger.Log(t, "terraform destroy instance ...")
-	// 	terraform.Destroy(t, terraform_options)
-	// })
+	defer test_structure.RunTestStage(t, "destroy", func() {
+		logger.Log(t, "terraform destroy instance ...")
+		terraform.Destroy(t, terraform_options)
+	})
 }
 
 func configureTerraformOptions(t *testing.T, terraform_dir string) *terraform.Options {
@@ -100,6 +100,6 @@ func validateBySSHToSlaveHost(t *testing.T, terraform_options *terraform.Options
 		ip := strings.TrimSpace(private_ips[i])
 		//result := test_helper.SSHToHost(t, ip, "opc", key_pair, command)
 		result := test_helper.SSHToPrivateHost(t, bastion_public_ip,ip,"opc", key_pair, command)
-		assert.True(t, strings.Contains(result, "Slave_SQL_Running: Yes"))
+		assert.True(t, strings.Contains(result, "Slave_IO_Running: Yes"))
 	}
 }

@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e -x
 
+# Get filename and fileposition of mysql master
 function getMysqlMasterStatus() {
   base_dir="/home/opc"
   keyfile="mysql_keyfile"
@@ -38,13 +39,14 @@ sudo yum install -y mysql-community-server
 sudo firewall-cmd --zone=public --permanent --add-port=3306/tcp
 sudo firewall-cmd --reload
 
-#At the initial start-up of the server, the server is initializeda superuser
-#and account’root’@’localhost’ is created, when MySQL data directory is empty.
+# At the initial start-up of the server, the server is initializeda superuser
+# and account’root’@’localhost’ is created, when MySQL data directory is empty.
 sudo systemctl start mysqld.service
 sudo systemctl status mysqld.service
 
 echo "MySQL installed successfully!"
 
+# Add skip-grant-tables parameter for mysql to alter password
 sudo chmod 666 /etc/my.cnf
 command sudo cat >>/etc/my.cnf <<'EOF'
 
@@ -52,28 +54,33 @@ skip-grant-tables
 EOF
 sudo chmod 644 /etc/my.cnf
 
+# Restart mysql service
 sudo systemctl restart mysqld.service
 
+# Alter password for root
 mysql <<EOF
 FLUSH PRIVILEGES;
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'Admin@1235';
 EOF
 
+# Stop mysql service
 sudo systemctl stop mysqld.service
 
-##delete the last row
+# Delete the added skip-grant-tables parameter in my.cnf
 sudo sed -i '$d' /etc/my.cnf
 
+# Start mysql service
 sudo systemctl start mysqld.service
 echo "MySQL started successfully."
 
+# Alter the password of root to the user-specified password
 mysql -uroot -pAdmin@1235 -e "SET sql_log_bin=OFF;"
 mysql -uroot -pAdmin@1235 -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';"
 mysql -uroot -p${mysql_root_password} -e "SET sql_log_bin=ON;"
 sudo systemctl stop mysqld.service
 
 
-#Connect to MySQL Master Host to get MySQL Status Infromation.
+#Connect to MySQL Master instance to get MySQL Status Infromation.
 getMysqlMasterStatus
 if [ $master_log_filename ]&&[ $master_log_fileposition ]; then
   echo "MySQl Master Status infromation(File and Postion):"
@@ -86,7 +93,6 @@ fi
 #Config my.cnf on MySQL Slave to connect with the Master
 #server-id should be an Integer number between 1 and 2^32 – 1
 #server-id should be different from any other server-ids in the same MySQL cluster.
-#---------Attention---------
 #In this program, the server-id of the Mysql Slave will begin with 3001
 sudo chmod 666 /etc/my.cnf
 
@@ -96,8 +102,8 @@ sudo chmod 644 /etc/my.cnf
 #Start mysql service
 sudo systemctl start mysqld.service
 echo "MySQL started successfully."
-#waitForMysql
 
+# Set replication
 mysql -uroot -p${mysql_root_password} <<EOF
 stop slave;
 EOF
@@ -109,6 +115,7 @@ EOF
 
 sleep 5
 
+# Check if the configuration works
 mysql -u ${replicate_acount} -h ${master_private_ip} -p${replicate_password} -s -e "exit"
 if [ $? -ne 0 ]; then
     echo "Failed! MySQL Slave can not connect to Master. Please check your network."
@@ -118,6 +125,7 @@ fi
 
 sleep 5
 
+# Print slave status
 mysql -uroot -p${mysql_root_password} <<EOF
 show slave status \G;
 EOF
