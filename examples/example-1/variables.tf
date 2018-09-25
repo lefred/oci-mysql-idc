@@ -1,4 +1,6 @@
+# VARIABLES
 variable "tenancy_ocid" {}
+
 variable "user_ocid" {}
 variable "fingerprint" {}
 variable "private_key_path" {}
@@ -6,6 +8,7 @@ variable "region" {}
 variable "compartment_ocid" {}
 variable "ssh_authorized_keys" {}
 variable "ssh_private_key" {}
+variable "master_subnet_id" {}
 
 variable "master_mysql_root_password" {}
 variable "slaves_mysql_root_password" {}
@@ -22,20 +25,8 @@ variable "replicate_slave_count" {
   default     = 2
 }
 
-variable "network_cidrs" {
-  type = "map"
-
-  default = {
-    VCN-CIDR       = "10.0.0.0/16"
-    masterSubnetAD = "10.0.20.0/24"
-    slaveSubnetAD1 = "10.0.30.0/24"
-    slaveSubnetAD2 = "10.0.31.0/24"
-    slaveSubnetAD3 = "10.0.32.0/24"
-  }
-}
-
-variable "label_prefix" {
-  default = ""
+variable "slave_subnet_ids" {
+  type = "list"
 }
 
 variable "image_id" {
@@ -51,17 +42,8 @@ variable "image_id" {
   }
 }
 
-# variable "http_port" {
-#   description = "The port to use for HTTP traffic to MySQL."
-#   default     = 3306
-# }
-
-variable "vcn_cidr" {
-  default = "10.0.0.0/16"
-}
-
 variable "bastion_display_name" {
-  default = "MysqlBastion"
+  default = "bastion"
 }
 
 variable "bastion_shape" {

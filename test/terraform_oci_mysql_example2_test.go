@@ -31,10 +31,10 @@ func TestModuleMysqlExample2(t *testing.T) {
 		validateSolution(t, terraform_options)
 	})
 
-	defer test_structure.RunTestStage(t, "destroy", func() {
-		logger.Log(t, "terraform destroy instance ...")
-		terraform.Destroy(t, terraform_options)
-	})
+	// defer test_structure.RunTestStage(t, "destroy", func() {
+	// 	logger.Log(t, "terraform destroy instance ...")
+	// 	terraform.Destroy(t, terraform_options)
+	// })
 }
 
 func configureTerraformOptions(t *testing.T, terraform_dir string) *terraform.Options {
@@ -55,6 +55,8 @@ func configureTerraformOptions(t *testing.T, terraform_dir string) *terraform.Op
 			"private_key_path":                 vars.Private_key_path,
 			"ssh_authorized_keys":              vars.Ssh_authorized_keys,
 			"ssh_private_key":                  vars.Ssh_private_key,
+			"bastion_authorized_keys":          vars.Bastion_authorized_keys,
+			"bastion_private_key":              vars.Bastion_private_key,
 			"master_mysql_root_password":       vars.Master_mysql_root_password,
 			"slaves_mysql_root_password":       vars.Slaves_mysql_root_password,
 			"master_slaves_replicate_acount":   vars.Master_slaves_replicate_acount,
@@ -80,19 +82,24 @@ func validateBySSHToMasterHost(t *testing.T, terraform_options *terraform.Option
 	rootpassword := terraform_options.Vars["master_mysql_root_password"].(string)
 	replicationAccount := terraform_options.Vars["master_slaves_replicate_acount"].(string)
 	command := "mysql -u root -p" + rootpassword + " -e " + "\"show grants for '" + replicationAccount + "'@'%';\""
-	master_public_ip := terraform.Output(t, terraform_options, "master_public_ip")
-	result := test_helper.SSHToHost(t, master_public_ip, "opc", key_pair, command)
+	//master_public_ip := terraform.Output(t, terraform_options, "master_public_ip")
+	// result := test_helper.SSHToHost(t, master_public_ip, "opc", key_pair, command)
+	bastion_public_ip    := terraform.Output(t, terraform_options, "bastion_public_ip")
+	master_private_ip  := terraform.Output(t, terraform_options, "master_private_ip")
+	result := test_helper.SSHToPrivateHost(t, bastion_public_ip,master_private_ip,"opc", key_pair, command)
 	assert.True(t, strings.Contains(result, "GRANT REPLICATION SLAVE ON *.* TO `repl`@`%`"))
 }
 
 func validateBySSHToSlaveHost(t *testing.T, terraform_options *terraform.Options, key_pair *ssh.KeyPair) {
 	password := terraform_options.Vars["slaves_mysql_root_password"].(string)
 	command := "mysql -u root -p" + password + " -e " + "\"show slave status \\G;\""
-	slave_public_ips := terraform.Output(t, terraform_options, "slave_public_ip")
-	public_ips := strings.Split(slave_public_ips, ",")
-	for i := 0; i < len(public_ips); i++ {
-		ip := strings.TrimSpace(public_ips[i])
-		result := test_helper.SSHToHost(t, ip, "opc", key_pair, command)
+	bastion_public_ip    := terraform.Output(t, terraform_options, "bastion_public_ip")
+	slave_private_ips := terraform.Output(t, terraform_options, "slave_private_ips")
+	private_ips := strings.Split(slave_private_ips, ",")
+	for i := 0; i < len(private_ips); i++ {
+		ip := strings.TrimSpace(private_ips[i])
+		//result := test_helper.SSHToHost(t, ip, "opc", key_pair, command)
+		result := test_helper.SSHToPrivateHost(t, bastion_public_ip,ip,"opc", key_pair, command)
 		assert.True(t, strings.Contains(result, "Slave_SQL_Running: Yes"))
 	}
 }

@@ -27,7 +27,6 @@ module "mysql-replication-set" {
   master_subnet_id = "${oci_core_subnet.MysqlMasterSubnetAD.id}"
   master_image_id  = "${var.image_id[var.region]}"
 
-  #slave_count         = "2"
   replicate_master_count = "${var.replicate_master_count}"
   replicate_slave_count  = "${var.replicate_slave_count}"
 
@@ -45,7 +44,4 @@ module "mysql-replication-set" {
   bastion_host        = "${oci_core_instance.bastion.public_ip}"
   bastion_user        = "${var.bastion_user}"
   bastion_private_key = "${var.bastion_private_key}"
-
-  #http_port = "3306"
-  #master_count                     = "1"
 }

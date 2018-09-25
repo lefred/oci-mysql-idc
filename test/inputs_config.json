@@ -7,6 +7,8 @@
   "private_key_path": "/Users/yupengshan/tools/OCI/oci_api_key.pem",
   "ssh_authorized_keys": "/Users/yupengshan/.ssh/id_rsa.pub",
   "ssh_private_key": "/Users/yupengshan/.ssh/id_rsa",
+  "bastion_authorized_keys": "/Users/yupengshan/.ssh/id_rsa.pub",
+  "bastion_private_key": "/Users/yupengshan/.ssh/id_rsa",
   "master_mysql_root_password": "Admin@123",
   "slaves_mysql_root_password": "Admin@123",
   "master_slaves_replicate_acount": "repl",
