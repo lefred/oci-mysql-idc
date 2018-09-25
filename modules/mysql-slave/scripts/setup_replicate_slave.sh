@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e -x
 
-
-
 function getMysqlMasterStatus() {
   base_dir="/home/opc"
   keyfile="mysql_keyfile"
@@ -30,8 +28,6 @@ function getMysqlMasterStatus() {
 
 # Install Mysql
 # Using Latest version： https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
-echo "-------bastion_public_ip--------"
-echo "$bastion_host"
 sudo wget -O /etc/yum.repos.d/mysql.rpm https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
 cd /etc/yum.repos.d
 sudo rpm -Uvh mysql.rpm
@@ -44,8 +40,8 @@ sudo firewall-cmd --reload
 
 #At the initial start-up of the server, the server is initializeda superuser
 #and account’root’@’localhost’ is created, when MySQL data directory is empty.
-nohup sudo systemctl start mysqld.service
-nohup sudo systemctl status mysqld.service
+sudo systemctl start mysqld.service
+sudo systemctl status mysqld.service
 
 echo "MySQL installed successfully!"
 
@@ -60,7 +56,7 @@ sudo systemctl restart mysqld.service
 
 mysql <<EOF
 FLUSH PRIVILEGES;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'Admin@1234';
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'Admin@1235';
 EOF
 
 sudo systemctl stop mysqld.service
@@ -71,8 +67,8 @@ sudo sed -i '$d' /etc/my.cnf
 sudo systemctl start mysqld.service
 echo "MySQL started successfully."
 
-mysql -uroot -pAdmin@1234 -e "SET sql_log_bin=OFF;"
-mysql -uroot -pAdmin@1234 -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';"
+mysql -uroot -pAdmin@1235 -e "SET sql_log_bin=OFF;"
+mysql -uroot -pAdmin@1235 -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';"
 mysql -uroot -p${mysql_root_password} -e "SET sql_log_bin=ON;"
 sudo systemctl stop mysqld.service
 

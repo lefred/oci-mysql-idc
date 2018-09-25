@@ -1,7 +1,6 @@
 ############################################
 # Create VCN
 ############################################
-#cidr_block     = "${lookup(var.network_cidrs, "VCN-CIDR")}"
 resource "oci_core_virtual_network" "MysqlVCN" {
   # cidr_block     = "${lookup(var.network_cidrs, "VCN-CIDR")}"
   cidr_block     = "${var.vcn_cidr}"

@@ -21,13 +21,12 @@ Each Module has the following folder structure:
 * [root](): This folder contains a root module calls mysql-master and mysql-slave sub-modules to create a MySQL cluster in Oracle Cloud Infrastructure.
 * [modules](): This folder contains the reusable code for this Module, broken down into one or more modules.
 * [examples](): This folder contains examples of how to use the modules.
-  - [example-1](examples/example-1): This is an example of how to use the terraform_oci_mysql module to deploy a MySQL cluster in Oracle Cloud Infrastructure by using an existing VCN, Security list and Subnets.
-  - [example-2](examples/example-2): This example creates a VCN in Oracle Cloud Infrastructure including default route table, DHCP options, security list and subnets from scratch, then use terraform_oci_mysql module to deploy a MySQL cluster.
+  - [example-1](examples/example-1): This example creates a VCN in Oracle Cloud Infrastructure including default route table, DHCP options, security list and subnets from scratch, then use terraform_oci_mysql module to deploy a MySQL Replication cluster.
 
 To deploy MySQL Replication Cluster using this Module:
 
 ```hcl
-module "mysql" {
+module "mysql-replication-set" {
   source                           = "git::ssh://git@bitbucket.oci.oraclecorp.com:7999/tfs/terraform-oci-mysql.git?ref=dev"
   compartment_ocid                 = "${var.compartment_ocid}"
   master_ad                        = "${var.master_ad}"
@@ -35,12 +34,16 @@ module "mysql" {
   master_mysql_root_password       = "${var.master_mysql_root_password}"
   master_slaves_replicate_acount   = "${var.master_slaves_replicate_acount}"
   master_slaves_replicate_password = "${var.master_slaves_replicate_password}"
-  slave_count                      = "${var.slave_count}"
+  replicate_master_count           = "${var.replicate_master_count}"
+  replicate_slave_count            = "${var.replicate_slave_count}"
   slave_ads                        = "${var.slave_ads}"
   slave_subnet_id                  = "${var.slave_subnet_id}"
   slaves_mysql_root_password       = "${var.slaves_mysql_root_password}"
   ssh_authorized_keys              = "${var.ssh_authorized_keys}"
   ssh_private_key                  = "${var.ssh_private_key}"
+  bastion_host                     = "${oci_core_instance.bastion.public_ip}"
+  bastion_user                     = "${var.bastion_user}"
+  bastion_private_key              = "${var.bastion_private_key}"
 }
 ```
 
@@ -56,7 +59,8 @@ master_shape | The shape to be used on the master instance.
 master_mysql_root_password | The password of MySQL 'root' account on the master instance.
 master_slaves_replicate_acount | The mysql account that will be used for replication between the master instance and the slave instances.
 master_slaves_replicate_password | Password of the mysql replication account.
-slave_count | Number of slave instances to launch.
+replicate_master_count | Number of master instances to launch.
+replicate_slave_count | Number of slave instances to launch.
 slave_ads | The list of Availability Domains for MySQL slave.
 slave_subnet_ids | The list of MySQL slave subnets' id.
 slave_display_name | The name of the slave instance.
@@ -66,6 +70,9 @@ slaves_mysql_root_password | The password of MySQL 'root' account on the slave i
 http_port | The port to use for HTTP traffic to MySQL.
 ssh_authorized_keys | Public SSH keys path to be included in the ~/.ssh/authorized_keys file for the default user on the instance.
 ssh_private_key | The private key path to access instance.
+bastion_host | The public ip of bastion instance.
+bastion_user | The user of bastion instance.
+bastion_private_key | The private key path to access bastion instance.
 
 
 
