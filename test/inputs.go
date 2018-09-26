@@ -11,6 +11,7 @@ type Inputs struct {
 	Ssh_private_key                  string `json:"ssh_private_key"`
 	Bastion_authorized_keys          string `json:"bastion_authorized_keys"`
   Bastion_private_key              string `json:"bastion_private_key"`
+	Nat_authorized_keys              string `json:"nat_authorized_keys"`
 	Master_mysql_root_password       string `json:"master_mysql_root_password"`
 	Slaves_mysql_root_password       string `json:"slaves_mysql_root_password"`
 	Master_slaves_replicate_acount   string `json:"master_slaves_replicate_acount"`

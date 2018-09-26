@@ -31,10 +31,10 @@ func TestModuleMysqlExample1(t *testing.T) {
 		validateSolution(t, terraform_options)
 	})
 
-	defer test_structure.RunTestStage(t, "destroy", func() {
-		logger.Log(t, "terraform destroy instance ...")
-		terraform.Destroy(t, terraform_options)
-	})
+	 defer test_structure.RunTestStage(t, "destroy", func() {
+	 	logger.Log(t, "terraform destroy instance ...")
+	 	terraform.Destroy(t, terraform_options)
+	 })
 }
 
 func configureTerraformOptions(t *testing.T, terraform_dir string) *terraform.Options {
@@ -57,6 +57,7 @@ func configureTerraformOptions(t *testing.T, terraform_dir string) *terraform.Op
 			"ssh_private_key":                  vars.Ssh_private_key,
 			"bastion_authorized_keys":          vars.Bastion_authorized_keys,
 			"bastion_private_key":              vars.Bastion_private_key,
+			"nat_authorized_keys":              vars.Nat_authorized_keys,
 			"master_mysql_root_password":       vars.Master_mysql_root_password,
 			"slaves_mysql_root_password":       vars.Slaves_mysql_root_password,
 			"master_slaves_replicate_acount":   vars.Master_slaves_replicate_acount,

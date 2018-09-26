@@ -22,3 +22,20 @@ data "oci_core_vnic_attachments" "bastion" {
 data "oci_core_vnic" "bastion" {
   vnic_id = "${lookup(data.oci_core_vnic_attachments.bastion.vnic_attachments[0],"vnic_id")}"
 }
+
+# Gets a list of vNIC attachments on the nat instance
+data "oci_core_vnic_attachments" "nat" {
+  compartment_id      = "${var.compartment_ocid}"
+  availability_domain = "${data.template_file.ad_names.*.rendered[var.nat_ad_index]}"
+  instance_id         = "${oci_core_instance.nat.id}"
+}
+
+# Gets the OCID of the first (default) vNIC on the NAT instance
+data "oci_core_vnic" "nat" {
+  vnic_id = "${lookup(data.oci_core_vnic_attachments.nat.vnic_attachments[0],"vnic_id")}"
+}
+
+data "oci_core_private_ips" "nat" {
+  ip_address = "${data.oci_core_vnic.nat.private_ip_address}"
+  subnet_id  = "${oci_core_subnet.nat.id}"
+}

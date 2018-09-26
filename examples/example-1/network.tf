@@ -23,16 +23,29 @@ resource "oci_core_internet_gateway" "MysqlIG" {
 ############################################
 # Create Route Table
 ############################################
-resource "oci_core_route_table" "MysqlRT" {
+resource "oci_core_route_table" "MysqlPublicRT" {
   compartment_id = "${var.compartment_ocid}"
   vcn_id         = "${oci_core_virtual_network.MysqlVCN.id}"
-  display_name   = "${var.label_prefix}MysqlRouteTable"
+  display_name   = "${var.label_prefix}MysqlPublicRT"
 
   route_rules {
     cidr_block = "0.0.0.0/0"
 
     # Internet Gateway route target for instances on public subnets
     network_entity_id = "${oci_core_internet_gateway.MysqlIG.id}"
+  }
+}
+
+resource "oci_core_route_table" "MysqlPrivateRT" {
+  compartment_id = "${var.compartment_ocid}"
+  vcn_id         = "${oci_core_virtual_network.MysqlVCN.id}"
+  display_name   = "MysqlPrivateRT"
+
+  route_rules {
+    cidr_block = "0.0.0.0/0"
+
+    # Internet Gateway route target for instances on public subnets
+    network_entity_id = "${lookup(data.oci_core_private_ips.nat.private_ips[0],"id")}"
   }
 }
 
@@ -98,12 +111,29 @@ resource "oci_core_security_list" "bastion" {
   }]
 }
 
+resource "oci_core_security_list" "nat" {
+  compartment_id = "${var.compartment_ocid}"
+  display_name   = "nat"
+  vcn_id         = "${oci_core_virtual_network.MysqlVCN.id}"
+
+  egress_security_rules = [{
+    protocol    = "6"
+    destination = "0.0.0.0/0"
+  }]
+
+  ingress_security_rules = [{
+    protocol = "6"
+    source   = "${var.vcn_cidr}"
+  }]
+}
+
 ############################################
 # Create Subnets
 ############################################
 locals {
   dmz_tier_prefix       = "${cidrsubnet("${var.vcn_cidr}", 4, 0)}"
   bastion_subnet_prefix = "${cidrsubnet("${local.dmz_tier_prefix}", 4, 0)}"
+  nat_subnet_prefix     = "${cidrsubnet("${local.dmz_tier_prefix}", 4, 1)}"
 }
 
 ############################################
@@ -117,7 +147,7 @@ resource "oci_core_subnet" "MysqlMasterSubnetAD" {
   security_list_ids   = ["${oci_core_security_list.MysqlPrivate.id}"]
   compartment_id      = "${var.compartment_ocid}"
   vcn_id              = "${oci_core_virtual_network.MysqlVCN.id}"
-  route_table_id      = "${oci_core_route_table.MysqlRT.id}"
+  route_table_id      = "${oci_core_route_table.MysqlPrivateRT.id}"
   dhcp_options_id     = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
 }
 
@@ -135,7 +165,7 @@ resource "oci_core_subnet" "MysqlSlaveSubnetAD" {
   security_list_ids = ["${oci_core_security_list.MysqlPrivate.id}"]
   compartment_id    = "${var.compartment_ocid}"
   vcn_id            = "${oci_core_virtual_network.MysqlVCN.id}"
-  route_table_id    = "${oci_core_route_table.MysqlRT.id}"
+  route_table_id    = "${oci_core_route_table.MysqlPrivateRT.id}"
   dhcp_options_id   = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
 }
 
@@ -146,6 +176,17 @@ resource "oci_core_subnet" "bastion" {
   cidr_block          = "${cidrsubnet(local.bastion_subnet_prefix, 4, 0)}"
   security_list_ids   = ["${oci_core_security_list.bastion.id}"]
   vcn_id              = "${oci_core_virtual_network.MysqlVCN.id}"
-  route_table_id      = "${oci_core_route_table.MysqlRT.id}"
+  route_table_id      = "${oci_core_route_table.MysqlPublicRT.id}"
+  dhcp_options_id     = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
+}
+
+resource "oci_core_subnet" "nat" {
+  availability_domain = "${data.template_file.ad_names.*.rendered[var.nat_ad_index]}"
+  compartment_id      = "${var.compartment_ocid}"
+  display_name        = "natad${var.nat_ad_index+1}"
+  cidr_block          = "${cidrsubnet(local.nat_subnet_prefix, 4, 0)}"
+  security_list_ids   = ["${oci_core_security_list.nat.id}"]
+  vcn_id              = "${oci_core_virtual_network.MysqlVCN.id}"
+  route_table_id      = "${oci_core_route_table.MysqlPublicRT.id}"
   dhcp_options_id     = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
 }
