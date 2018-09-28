@@ -1,3 +1,13 @@
+variable "mysql_repo_releasever" {
+  description = "The release server of the Mysql repo in yum."
+  default     = "8.0"
+}
+
+variable "mysql_version" {
+  description = "The version of the Mysql community server."
+  default     = "8.0.12"
+}
+
 variable "compartment_ocid" {
   description = "Compartment's OCID where VCN will be created. "
 }

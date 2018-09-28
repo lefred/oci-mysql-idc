@@ -28,12 +28,19 @@ function getMysqlMasterStatus() {
 }
 
 # Install Mysql
-# Using Latest version： https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
-sudo wget -O /etc/yum.repos.d/mysql.rpm https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
-cd /etc/yum.repos.d
-sudo rpm -Uvh mysql.rpm
+## Using the MySQL Yum repository to install the latest versions of MySQL 8.0
+## Using Latest version： https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+##sudo wget -O /etc/yum.repos.d/mysql.rpm https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+##cd /etc/yum.repos.d
+##sudo rpm -Uvh mysql.rpm
+##sudo yum install -y mysql-community-server
 
-sudo yum install -y mysql-community-server
+# Install MySQL Community Edition 8.0.12
+baseurl=https://dev.mysql.com/get/Downloads/MySQL-${mysql_repo_releasever}/mysql-${mysql_version}-1.el7.x86_64.rpm-bundle.tar
+sudo wget -O /etc/yum.repos.d/MySQL-${mysql_version}.tar $baseurl
+cd /etc/yum.repos.d
+sudo tar -xvf MySQL-${mysql_version}.tar
+sudo yum install -y mysql-community-{server,client,common,libs}-* --exclude='*minimal*'
 
 # Set httpport on firewall
 sudo firewall-cmd --zone=public --permanent --add-port=3306/tcp

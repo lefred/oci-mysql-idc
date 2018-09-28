@@ -5,10 +5,12 @@ data "template_file" "setup_mysql" {
 
   vars {
     #http_port           = "${var.http_port}"
-    number_of_master    = "${var.number_of_master}"
-    mysql_root_password = "${var.mysql_root_password}"
-    replicate_acount    = "${var.replicate_acount}"
-    replicate_password  = "${var.replicate_password}"
+    mysql_repo_releasever = "${var.mysql_repo_releasever}"
+    mysql_version         = "${var.mysql_version}"
+    number_of_master      = "${var.number_of_master}"
+    mysql_root_password   = "${var.mysql_root_password}"
+    replicate_acount      = "${var.replicate_acount}"
+    replicate_password    = "${var.replicate_password}"
   }
 }
 

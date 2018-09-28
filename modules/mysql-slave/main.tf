@@ -5,8 +5,10 @@ data "template_file" "install_slave" {
 
   vars {
     # master_public_ip = "${var.master_public_ip}"
-    master_private_ip = "${var.master_private_ip}"
-    bastion_host      = "${var.bastion_host}"
+    mysql_repo_releasever = "${var.mysql_repo_releasever}"
+    mysql_version         = "${var.mysql_version}"
+    master_private_ip     = "${var.master_private_ip}"
+    bastion_host          = "${var.bastion_host}"
 
     #http_port           = "${var.http_port}"
     mysql_root_password = "${var.slaves_mysql_root_password}"
