@@ -44,7 +44,7 @@ variable "master_image_id" {
 
 variable "master_shape" {
   description = "Instance shape to use for master instance. "
-  default     = "VM.Standard1.1"
+  default     = "VM.Standard2.1"
 }
 
 variable "master_mysql_root_password" {
@@ -101,7 +101,7 @@ variable "slave_image_id" {
 
 variable "slave_shape" {
   description = "Instance shape to use for slave instance. "
-  default     = "VM.Standard1.1"
+  default     = "VM.Standard2.1"
 }
 
 variable "slave_user_data" {

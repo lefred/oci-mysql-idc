@@ -19,7 +19,7 @@ variable "replicate_master_count" {
 
 variable "replicate_slave_count" {
   description = "Number of slave instances to launch. "
-  default     = 2
+  default     = 3
 }
 
 variable "network_cidrs" {
@@ -65,7 +65,7 @@ variable "bastion_display_name" {
 }
 
 variable "bastion_shape" {
-  default = "VM.Standard1.1"
+  default = "VM.Standard2.1"
 }
 
 variable "bastion_host" {
@@ -88,7 +88,7 @@ variable "nat_display_name" {
 }
 
 variable "nat_shape" {
-  default = "VM.Standard1.1"
+  default = "VM.Standard2.1"
 }
 
 variable "nat_authorized_keys" {}
