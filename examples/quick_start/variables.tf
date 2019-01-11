@@ -51,13 +51,22 @@ variable "image_id" {
   }
 }
 
-# variable "http_port" {
-#   description = "The port to use for HTTP traffic to MySQL."
-#   default     = 3306
-# }
+variable "http_port" {
+  description = "The port to use for HTTP traffic to MySQL."
+  default     = 3306
+}
 
 variable "vcn_cidr" {
   default = "10.0.0.0/16"
+}
+
+locals {
+  app_tier_prefix = "${cidrsubnet("${var.vcn_cidr}", 2, 1)}"
+  dmz_tier_prefix = "${cidrsubnet("${var.vcn_cidr}", 2, 0)}"
+
+  bastion_subnet_prefix = "${cidrsubnet("${local.dmz_tier_prefix}", 2, 1)}"
+  master_subnet_prefix  = "${cidrsubnet("${local.app_tier_prefix}", 2, 0)}"
+  slave_subnet_prefix   = "${cidrsubnet("${local.app_tier_prefix}", 2, 1)}"
 }
 
 variable "bastion_display_name" {
