@@ -4,13 +4,11 @@ data "template_file" "install_slave" {
   template = "${file("${path.module}/scripts/setup_replicate_slave.sh")}"
 
   vars {
-    # master_public_ip = "${var.master_public_ip}"
     mysql_repo_releasever = "${var.mysql_repo_releasever}"
     mysql_version         = "${var.mysql_version}"
     master_private_ip     = "${var.master_private_ip}"
     bastion_host          = "${var.bastion_host}"
 
-    #http_port           = "${var.http_port}"
     mysql_root_password = "${var.slaves_mysql_root_password}"
     replicate_acount    = "${var.replicate_acount}"
     replicate_password  = "${var.replicate_password}"
@@ -29,14 +27,13 @@ resource "oci_core_instance" "TFMysqlSlave" {
   availability_domain = "${var.availability_domains[count.index%length(var.availability_domains)]}"
 
   compartment_id = "${var.compartment_ocid}"
-  display_name   = "${var.label_prefix}${var.slave_display_name}-${count.index+1}"
+  display_name   = "${var.label_prefix}${var.slave_display_name}${count.index+1}"
   shape          = "${var.shape}"
 
   create_vnic_details {
     subnet_id    = "${var.subnet_ids[count.index%length(var.subnet_ids)]}"
     display_name = "${var.label_prefix}${var.slave_display_name}-${count.index+1}"
 
-    # assign_public_ip = true
     assign_public_ip = "${var.assign_public_ip}"
     hostname_label   = "${var.slave_display_name}-${count.index+1}"
   }
@@ -65,7 +62,6 @@ resource "oci_core_instance" "TFMysqlSlave" {
 
     content = "${file(var.ssh_private_key)}"
 
-    #destination = "/tmp/key.pem"
     destination = "${local.mysql_keyfile_dest}"
   }
 

@@ -12,7 +12,6 @@ module "mysql-replication-master" {
   label_prefix        = "${var.label_prefix}"
   subnet_id           = "${var.master_subnet_id}"
 
-  #http_port           = "${var.http_port}"
   mysql_root_password = "${var.master_mysql_root_password}"
   replicate_acount    = "${var.master_slaves_replicate_acount}"
   replicate_password  = "${var.master_slaves_replicate_password}"
@@ -39,9 +38,7 @@ module "mysql-replication-slave" {
   shape                = "${var.slave_shape}"
   label_prefix         = "${var.label_prefix}"
   subnet_ids           = "${var.slave_subnet_ids}"
-
-  #http_port            = "${var.http_port}"
-  master_private_ip = "${module.mysql-replication-master.private_ip}"
+  master_private_ip    = "${module.mysql-replication-master.private_ip}"
 
   ssh_authorized_keys        = "${var.ssh_authorized_keys}"
   ssh_private_key            = "${var.ssh_private_key}"

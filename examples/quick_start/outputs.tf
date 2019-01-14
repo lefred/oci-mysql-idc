@@ -1,6 +1,6 @@
-# output "bastion_public_ip" {
-#   value = ["${data.oci_core_vnic.bastion.public_ip_address}"]
-# }
+output "bastion_public_ip" {
+  value = ["${oci_core_instance.bastion.public_ip}"]
+}
 
 output "slave_private_ips" {
   value = "${module.mysql-replication-set.slave_private_ips}"

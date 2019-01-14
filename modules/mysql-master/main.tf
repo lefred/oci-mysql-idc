@@ -4,7 +4,6 @@ data "template_file" "setup_mysql" {
   template = "${file("${path.module}/scripts/setup_replicate_master.sh")}"
 
   vars {
-    #http_port           = "${var.http_port}"
     mysql_repo_releasever = "${var.mysql_repo_releasever}"
     mysql_version         = "${var.mysql_version}"
     number_of_master      = "${var.number_of_master}"
@@ -18,7 +17,7 @@ locals {
   setup_script_dest = "~/setup_replicate_master.sh"
 }
 
-## MYSQL MASTER INSTANCE
+## MYSQL REPLICATION MASTER INSTANCE
 resource "oci_core_instance" "TFMysqlMaster" {
   availability_domain = "${var.availability_domain}"
   compartment_id      = "${var.compartment_ocid}"

@@ -2,7 +2,6 @@
 # Create VCN
 ############################################
 resource "oci_core_virtual_network" "MysqlVCN" {
-  # cidr_block     = "${lookup(var.network_cidrs, "VCN-CIDR")}"
   cidr_block     = "${var.vcn_cidr}"
   compartment_id = "${var.compartment_ocid}"
   display_name   = "MysqlVCN"
@@ -134,16 +133,14 @@ resource "oci_core_security_list" "nat" {
 ############################################
 resource "oci_core_subnet" "MysqlMasterSubnetAD" {
   availability_domain = "${data.template_file.ad_names.*.rendered[0]}"
-
-  #cidr_block          = "${lookup(var.network_cidrs, "masterSubnetAD")}"
-  cidr_block        = "${cidrsubnet("${local.master_subnet_prefix}", 4, 0)}"
-  display_name      = "${var.label_prefix}MysqlMasterSubnetAD"
-  dns_label         = "masterad"
-  security_list_ids = ["${oci_core_security_list.MysqlPrivate.id}"]
-  compartment_id    = "${var.compartment_ocid}"
-  vcn_id            = "${oci_core_virtual_network.MysqlVCN.id}"
-  route_table_id    = "${oci_core_route_table.MysqlPrivateRT.id}"
-  dhcp_options_id   = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
+  cidr_block          = "${cidrsubnet("${local.master_subnet_prefix}", 4, 0)}"
+  display_name        = "${var.label_prefix}MysqlMasterSubnetAD"
+  dns_label           = "masterad"
+  security_list_ids   = ["${oci_core_security_list.MysqlPrivate.id}"]
+  compartment_id      = "${var.compartment_ocid}"
+  vcn_id              = "${oci_core_virtual_network.MysqlVCN.id}"
+  route_table_id      = "${oci_core_route_table.MysqlPrivateRT.id}"
+  dhcp_options_id     = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
 }
 
 ############################################
@@ -152,16 +149,14 @@ resource "oci_core_subnet" "MysqlMasterSubnetAD" {
 resource "oci_core_subnet" "MysqlSlaveSubnetAD" {
   count               = "${length(data.template_file.ad_names.*.rendered)}"
   availability_domain = "${data.template_file.ad_names.*.rendered[count.index]}"
-
-  #cidr_block          = "${lookup(var.network_cidrs, "slaveSubnetAD${count.index+1}")}"
-  cidr_block        = "${cidrsubnet("${local.slave_subnet_prefix}", 4, count.index)}"
-  display_name      = "${var.label_prefix}MysqlSlaveSubnetAD${count.index+1}"
-  dns_label         = "slavead${count.index+1}"
-  security_list_ids = ["${oci_core_security_list.MysqlPrivate.id}"]
-  compartment_id    = "${var.compartment_ocid}"
-  vcn_id            = "${oci_core_virtual_network.MysqlVCN.id}"
-  route_table_id    = "${oci_core_route_table.MysqlPrivateRT.id}"
-  dhcp_options_id   = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
+  cidr_block          = "${cidrsubnet("${local.slave_subnet_prefix}", 4, count.index)}"
+  display_name        = "${var.label_prefix}MysqlSlaveSubnetAD${count.index+1}"
+  dns_label           = "slavead${count.index+1}"
+  security_list_ids   = ["${oci_core_security_list.MysqlPrivate.id}"]
+  compartment_id      = "${var.compartment_ocid}"
+  vcn_id              = "${oci_core_virtual_network.MysqlVCN.id}"
+  route_table_id      = "${oci_core_route_table.MysqlPrivateRT.id}"
+  dhcp_options_id     = "${oci_core_virtual_network.MysqlVCN.default_dhcp_options_id}"
 }
 
 ############################################

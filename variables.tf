@@ -34,7 +34,7 @@ variable "master_subnet_id" {
 
 variable "master_display_name" {
   description = "The name of the master instance. "
-  default     = "tf-mysql-master"
+  default     = "MysqlReplicationMaster"
 }
 
 variable "master_image_id" {
@@ -69,14 +69,10 @@ variable "master_user_data" {
 
 variable "replicate_master_count" {
   description = "Number of master instances to launch. "
-
-  #default     = 1
 }
 
 variable "replicate_slave_count" {
   description = "Number of slave instances to launch. "
-
-  #default     = 2
 }
 
 variable "slave_ads" {
@@ -91,7 +87,7 @@ variable "slave_subnet_ids" {
 
 variable "slave_display_name" {
   description = "The name of the slave instance. "
-  default     = "tf-mysql-slave"
+  default     = "MysqlReplicationSlave"
 }
 
 variable "slave_image_id" {
@@ -108,11 +104,6 @@ variable "slave_user_data" {
   description = "Provide your own base64-encoded data to be used by Cloud-Init to run custom scripts or provide custom Cloud-Init configuration for slave instance. "
   default     = ""
 }
-
-# variable "http_port" {
-#   description = "The port to use for HTTP traffic to MySQL. "
-#   default     = 3306
-# }
 
 variable "slaves_mysql_root_password" {
   description = "Password of the MySQL 'root@localhost' account in the Slaves Instance."
