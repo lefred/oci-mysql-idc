@@ -1,7 +1,7 @@
 ## Deploy MySQL Replication Cluster
 This is an example of how to use the terraform_oci_mysql module to deploy a MySQL Replication Cluster in Oracle Cloud Infrastructure.
 
-**Note**: To keep this example as simple to deploy and test as possible, it deploys the MySQL Replication Cluster into your existing VCN and subnets, all of which are publicly accessible, and  http_port should be configured in security list.  
+**Note**: To keep this example as simple to deploy and test as possible, it deploys the MySQL Replication Cluster into your existing VCN, subnets and Bastion all of which are publicly accessible, and  http_port should be configured in security list.  
 
 ### Using this example
 Update terraform.tfvars with the required information.
