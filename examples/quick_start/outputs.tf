@@ -1,5 +1,5 @@
 output "bastion_public_ip" {
-  value = ["${oci_core_instance.bastion.public_ip}"]
+  value = "${oci_core_instance.bastion.public_ip}"
 }
 
 output "slave_private_ips" {
