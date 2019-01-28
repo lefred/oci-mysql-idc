@@ -2,7 +2,7 @@
 
 
 ## About
-The MySQL Oracle Cloud Infrastructure Module provides a Terraform-based MySQL Replication Cluster installation for Oracle Cloud Infrastructure. Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves). A MySQL Replication Cluster typically involves one or more master instance(s) coupled with one or more slave instance(s).
+The MySQL Oracle Cloud Infrastructure Module provides a Terraform-based MySQL Replication Cluster installation for Oracle Cloud Infrastructure. Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves). A MySQL Replication Cluster typically involves one or more master server(s)/instance(s) coupled with one or more slave server(s)/instance(s).
 
 ![MySQL architecture](docs/images/architecture.png)
 
@@ -18,12 +18,11 @@ Instead of figuring out the details of how to run a piece of infrastructure from
 
 ## How to use this Module
 Each Module has the following folder structure:
-* [root](): This folder contains a root module calls mysql-master and mysql-slave sub-modules to create a MySQL cluster in Oracle Cloud Infrastructure.
+* [root](): This folder contains a root module calls mysql-master and mysql-slave sub-modules to create a MySQL Replication cluster in Oracle Cloud Infrastructure.
 * [modules](): This folder contains the reusable code for this Module, broken down into one or more modules.
 * [examples](): This folder contains examples of how to use the modules.
-  - [example-1](examples/example-1): This example creates a VCN in Oracle Cloud Infrastructure including default route table, DHCP options, security list and subnets from scratch, then use terraform_oci_mysql module to deploy a MySQL Replication cluster.
 
-To deploy MySQL Replication Cluster using this Module:
+The following code shows how to deploy MySQL Replication Cluster using this module:
 
 ```hcl
 module "mysql-replication-set" {
@@ -56,17 +55,17 @@ master_subnet_id | The OCID of the master subnet to create the VNIC in.
 master_display_name | The name of the master instance.
 master_image_id | The OCID of an image for a master instance to use. You can refer to https://docs.us-phoenix-1.oraclecloud.com/images/ for more details.
 master_shape | The shape to be used on the master instance.
-master_mysql_root_password | The password of MySQL 'root' account on the master instance.
-master_slaves_replicate_acount | The mysql account that will be used for replication between the master instance and the slave instances.
-master_slaves_replicate_password | Password of the mysql replication account.
-replicate_master_count | Number of master instances to launch.
-replicate_slave_count | Number of slave instances to launch.
+master_mysql_root_password | The password for 'root@localhost' account of the MySQL master server.
+master_slaves_replicate_acount | The MySQL replication account for synchronization between the master server and the slave servers.
+master_slaves_replicate_password | Password for the MySQL replication account.
+replicate_master_count | Number of MySQL master servers to launch.
+replicate_slave_count | Number of MySQL slave servers to launch.
 slave_ads | The list of Availability Domains for MySQL slave.
 slave_subnet_ids | The list of MySQL slave subnets' id.
 slave_display_name | The name of the slave instance.
 slave_image_id | The OCID of an image for slave instance to use. You can refer to https://docs.us-phoenix-1.oraclecloud.com/images/ for more details.
 slave_shape | The shape to be used on the slave instance.
-slaves_mysql_root_password | The password of MySQL 'root' account on the slave instance.
+slaves_mysql_root_password | Password for 'root@localhost' account of the MySQL slave servers.
 http_port | The port to use for HTTP traffic to MySQL.
 ssh_authorized_keys | Public SSH keys path to be included in the ~/.ssh/authorized_keys file for the default user on the instance.
 ssh_private_key | The private key path to access instance.

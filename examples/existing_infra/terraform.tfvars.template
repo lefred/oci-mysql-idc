@@ -24,7 +24,7 @@ slave_subnet_ids = ["<list of subnet OCID that mysql slave instances will use>"]
 #This will require that passwords contain at least one upper case letter,
 #one lower case letter, one digit, and one special character,
 #and that the total password length is at least 8 characters.
-master_mysql_root_password = "<password of 'root@localhost' on the master node>"
-slaves_mysql_root_password = "<password of 'root@localhost' on the slave nodes>"
-master_slaves_replicate_acount = "<mysql account for replication between the master node and the slave nodes>"
-master_slaves_replicate_password = "<password of the mysql replication account>"
+master_mysql_root_password = "<password for 'root@localhost' account of the MySQL master server>"
+slaves_mysql_root_password = "<password for 'root@localhost' account of the MySQL slave servers>"
+master_slaves_replicate_acount = "<MySQL replication account for synchronization between the master server and the slave servers>"
+master_slaves_replicate_password = "<password for the MySQL replication account>"

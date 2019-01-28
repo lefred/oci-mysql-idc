@@ -22,18 +22,6 @@ variable "replicate_slave_count" {
   default     = 3
 }
 
-variable "network_cidrs" {
-  type = "map"
-
-  default = {
-    VCN-CIDR       = "10.0.0.0/16"
-    masterSubnetAD = "10.0.20.0/24"
-    slaveSubnetAD1 = "10.0.30.0/24"
-    slaveSubnetAD2 = "10.0.31.0/24"
-    slaveSubnetAD3 = "10.0.32.0/24"
-  }
-}
-
 variable "label_prefix" {
   default = ""
 }
