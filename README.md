@@ -4,7 +4,7 @@
 ## About
 The MySQL Oracle Cloud Infrastructure Module provides a Terraform-based MySQL Replication Cluster installation for Oracle Cloud Infrastructure. Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves). A MySQL Replication Cluster typically involves one or more master server(s)/instance(s) coupled with one or more slave server(s)/instance(s).
 
-![MySQL architecture](docs/images/architecture.png)
+![MySQL Replication architecture](examples/quick_start/images/example.png)
 
 ## Prerequisites
 1. Download and install Terraform (v0.10.3 or later)
