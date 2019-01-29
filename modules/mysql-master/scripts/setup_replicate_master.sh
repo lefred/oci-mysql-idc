@@ -6,7 +6,6 @@ set -e -x
 #replicate_acount="repl"
 #replicate_password="Slave@123"
 #mysql_repo_releasever="8.0"
-#mysql_version="8.0.12"
 
 # Get the status of MySQL Master. File name and position in status will be used to initialize the Slave instance.
 function getMasterStatus() {
@@ -54,7 +53,7 @@ sudo systemctl restart mysqld.service
 # Alter password for root
 mysql <<EOF
 FLUSH PRIVILEGES;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'Admin@1235';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';
 EOF
 
 # Stop mysql service
@@ -77,11 +76,6 @@ sudo chmod 644 /etc/my.cnf
 # Start mysql service
 sudo systemctl start mysqld.service
 echo "MySQL started successfully."
-
-# Alter the password of root to the user-specified password
-mysql -uroot -pAdmin@1235 -e "SET sql_log_bin=OFF;"
-mysql -uroot -pAdmin@1235 -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';"
-mysql -uroot -p${mysql_root_password} -e "SET sql_log_bin=ON;"
 
 # Execute the MySQL statement
 mysql -uroot -p${mysql_root_password} -e "CREATE USER '${replicate_acount}'@'%' IDENTIFIED BY '${replicate_password}';"

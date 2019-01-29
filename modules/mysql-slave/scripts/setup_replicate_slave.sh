@@ -67,7 +67,7 @@ sudo systemctl restart mysqld.service
 # Alter password for root
 mysql <<EOF
 FLUSH PRIVILEGES;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'Admin@1235';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';
 EOF
 
 # Stop mysql service
@@ -75,17 +75,6 @@ sudo systemctl stop mysqld.service
 
 # Delete the added skip-grant-tables parameter in my.cnf
 sudo sed -i '$d' /etc/my.cnf
-
-# Start mysql service
-sudo systemctl start mysqld.service
-echo "MySQL started successfully."
-
-# Alter the password of root to the user-specified password
-mysql -uroot -pAdmin@1235 -e "SET sql_log_bin=OFF;"
-mysql -uroot -pAdmin@1235 -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${mysql_root_password}';"
-mysql -uroot -p${mysql_root_password} -e "SET sql_log_bin=ON;"
-sudo systemctl stop mysqld.service
-
 
 #Connect to MySQL Master instance to get MySQL Status Infromation.
 getMysqlMasterStatus
