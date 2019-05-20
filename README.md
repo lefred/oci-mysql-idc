@@ -1,5 +1,6 @@
 # Oracle Cloud Infrastructure MySQL Terraform Module
 
+These are Terraform modules that deploy [MySQL](https://www.mysql.com/) on [Oracle Cloud Infrastructure (OCI)](https://cloud.oracle.com/en_US/cloud-infrastructure).
 
 ## About
 The MySQL Oracle Cloud Infrastructure Module provides a Terraform-based MySQL Replication Cluster installation for Oracle Cloud Infrastructure. Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves). A MySQL Replication Cluster typically involves one or more master server(s)/instance(s) coupled with one or more slave server(s)/instance(s).
@@ -10,7 +11,6 @@ The MySQL Oracle Cloud Infrastructure Module provides a Terraform-based MySQL Re
 1. Download and install Terraform (v0.10.3 or later)
 2. Download and install the Oracle Cloud Infrastructure Terraform Provider (v2.0.0 or later)
 3. Export Oracle Cloud Infrastructure credentials. (this refer to the https://github.com/oracle/terraform-provider-oci )
-
 
 ## What's a Module?
 A Module is a canonical, reusable, best-practices definition for how to run a single piece of infrastructure, such as a database or server cluster. Each Module is created using Terraform, and includes automated tests, examples, and documentation. It is maintained both by the open source community and companies that provide commercial support.
@@ -72,8 +72,3 @@ ssh_private_key | The private key path to access instance.
 bastion_host | The public ip of bastion instance.
 bastion_user | The user of bastion instance.
 bastion_private_key | The private key path to access bastion instance.
-
-
-
-## Contributing
-This project is open source. Oracle appreciates any contributions that are made by the open source community.
