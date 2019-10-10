@@ -1,4 +1,4 @@
-# oci-quickstart-mysql
+# oci-mysql
 
 These are Terraform modules that deploy [MySQL](https://www.mysql.com/) on [Oracle Cloud Infrastructure (OCI)](https://cloud.oracle.com/en_US/cloud-infrastructure).
 
