@@ -19,5 +19,5 @@ Use Terraform to Provision resources and MySQL Replication Cluster on Oracle Clo
 $ terraform apply
 ```
 
-![MySQL InnoDB Cluster architecture](examples/multiple_ad/images/oci_multi_fd.png)
+![MySQL InnoDB Cluster architecture](images/oci_multi_fd.png)
 
