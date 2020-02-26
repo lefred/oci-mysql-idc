@@ -9,7 +9,7 @@ The default setup is composed by one bastion host orchestrating the cluster usin
 
 Members can be installed on different Availability Domains or Fault Domains.
 
-![MySQL InnoDB Cluster architecture](https://github.com/lefred/oci-mysql/raw/innodbcluster/examples/multiple_ad/images/oci_multi_ad.png)
+![MySQL InnoDB Cluster architecture](https://github.com/lefred/oci-mysql/raw/innodbcluster/examples/multiple_fd/images/oci_multi_fd.png)
 
 ## Prerequisites
 
