@@ -191,6 +191,7 @@ module "mysql-innodb-cluster" {
   number_of_nodes       = "${var.number_of_nodes}"
   source                = "./modules/mysql-innodb-cluster"
   availability_domains  = "${data.template_file.ad_names.*.rendered}"
+  use_ad                = false
   compartment_ocid      = "${var.compartment_ocid}"
   node_display_name     = "${var.node_display_name}"
   image_id              = "${var.node_image_id}"

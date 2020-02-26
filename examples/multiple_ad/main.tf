@@ -204,6 +204,7 @@ module "mysql-innodb-cluster" {
   bastion_public_key    = "${var.bastion_public_key}"
   bastion_private_key   = "${var.bastion_private_key}"
   bastion_ip            = var.bastion_host == null ? "${module.mysql-shell.public_ip}" : "${var.bastion_host}"
+  use_AD                = "${var.use_AD}"
 }
 
 module "mysql-router" {
