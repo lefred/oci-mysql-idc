@@ -60,7 +60,18 @@ else
     echo "Waiting 10 seconds then trying again to connect to Primary instance...."
     sleep 10
   done
-  mysqlsh clusteradmin:${clusteradmin_password}@$primary_ip -- cluster add-instance "clusteradmin:${clusteradmin_password}@$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1
+  # try to connect and clone - it may fail if the donor is already busy
+  while true
+  do
+      mysqlsh clusteradmin:${clusteradmin_password}@$primary_ip -- cluster add-instance "clusteradmin:${clusteradmin_password}@$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1
+      if [[ $? -eq 0 ]]
+      then
+          echo "Node provisioning done successfully!"
+          break
+      fi
+      echo "WARNING: not able to provision for the moment, will try again in 2 minutes!"
+      sleep 120
+  done
   sleep 10
   echo "MySQL InnoDB Cluster instance added successfully!"
 fi   
