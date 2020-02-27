@@ -20,16 +20,16 @@ resource "null_resource" "TFMysqlRouter" {
 
   provisioner "file" {
     
-    content     = "${data.template_file.install_router.rendered}"
-    destination = "${local.setup_script_dest}"
+    content     = data.template_file.install_router.rendered
+    destination = local.setup_script_dest
 
     connection  {
       type        = "ssh"
-      host        = "${var.mysql_shell_ip}"
+      host        = var.mysql_shell_ip
       agent       = false
       timeout     = "5m"
-      user        = "${var.vm_user}"
-      private_key = "${file("${var.ssh_private_key}")}"
+      user        = var.vm_user
+      private_key = file("${var.ssh_private_key}")
 
     }
 
@@ -39,11 +39,11 @@ resource "null_resource" "TFMysqlRouter" {
     
     connection  {
       type        = "ssh"
-      host        = "${var.mysql_shell_ip}"
+      host        = var.mysql_shell_ip
       agent       = false
       timeout     = "5m"
-      user        = "${var.vm_user}"
-      private_key = "${file("${var.ssh_private_key}")}"
+      user        = var.vm_user
+      private_key = file("${var.ssh_private_key}")
 
     }
    
