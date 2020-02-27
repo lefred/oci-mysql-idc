@@ -101,4 +101,4 @@ number_of_nodes | Number of nodes in the cluster [default: 3]
 clusteradmin_password | Password for the clusteradmin user able to connect from bastion/shell
 cluster_name | MySQL InnoDB Cluster Name [default: MyCluster]
 
-
+Because of the way MySQL InnoDB Cluster provision the initial data between members, it's necessary to use `-parallelism=1` when applying

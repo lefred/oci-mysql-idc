@@ -16,7 +16,7 @@ $ terraform plan
 ```
 Use Terraform to Provision resources and MySQL Replication Cluster on Oracle Cloud Infrastructure:
 ```
-$ terraform apply
+$ terraform apply -parallelism=1 
 ```
 
 ![MySQL InnoDB Cluster architecture](images/oci_multi_fd.png)
