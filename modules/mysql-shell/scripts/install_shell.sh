@@ -9,8 +9,8 @@
 ##sudo rpm -Uvh mysql.rpm
 ##sudo yum install -y mysql-community-server
 
-# Install MySQL Community Edition 8.0.18
-rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+# Install MySQL Community Edition 8.0
+rpm -ivh https://dev.mysql.com/get/mysql80-community-release-$(uname -r | sed 's/^.*\(el[0-9]\+\).*$/\1/')-1.noarch.rpm
 yum install -y mysql-shell-${mysql_version} 
 mkdir ~${user}/.mysqlsh
 cp /usr/share/mysqlsh/prompt/prompt_256pl+aw.json ~${user}/.mysqlsh/prompt.json

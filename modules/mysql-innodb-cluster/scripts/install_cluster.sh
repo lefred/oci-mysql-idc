@@ -1,7 +1,6 @@
 #!/bin/bash
 # Configure Instance, create cluster, add instances...
 
-# Install MySQL Community Edition 8.0.18
 echo "Configuring MySQL Instance..."
 while true
 do
