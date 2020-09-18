@@ -10,8 +10,8 @@ region = "<REPLACE_ME>" # example: eu-frankfurt-1
 # Compartment
 compartment_ocid = "<REPLACE_ME>"
 # Keys Configration
-ssh_authorized_keys = "<REPLACE_ME>"
-ssh_private_key = "<REPLACE_ME>"
+ssh_authorized_keys_path = "<REPLACE_ME>"
+ssh_private_key_path = "<REPLACE_ME>"
 
 clusteradmin_password = "<REPLACE_ME>"
 cluster_name = "MyClusterInOCI"
