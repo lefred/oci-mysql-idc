@@ -1,10 +1,3 @@
-provider "oci" {
-  tenancy_ocid = var.tenancy_ocid
-  user_ocid = var.user_ocid
-  fingerprint = var.fingerprint
-  private_key_path = var.private_key_path
-  region = var.region
-}
 data "oci_identity_availability_domains" "ad" {
   compartment_id = "${var.tenancy_ocid}"
 }
@@ -12,6 +5,15 @@ data "oci_identity_availability_domains" "ad" {
 data "template_file" "ad_names" {
   count    = "${length(data.oci_identity_availability_domains.ad.availability_domains)}"
   template = "${lookup(data.oci_identity_availability_domains.ad.availability_domains[count.index], "name")}"
+}
+
+data "oci_core_images" "images_for_shape" {
+    compartment_id = "${var.compartment_ocid}"
+    operating_system = "Oracle Linux"
+    operating_system_version = "8"
+    shape = "${var.node_shape}"
+    sort_by = "TIMECREATED"
+    sort_order = "DESC"
 }
 
 resource "oci_core_virtual_network" "mysqlvcn" {
@@ -149,6 +151,9 @@ resource "oci_core_security_list" "private_security_list" {
   }
 }
 
+resource "tls_private_key" "public_private_key_pair" {
+  algorithm = "RSA"
+}
 
 resource "oci_core_subnet" "public" {
   cidr_block = cidrsubnet(var.vcn_cidr, 8, 0)
@@ -178,13 +183,13 @@ module "mysql-shell" {
   availability_domain = "${data.template_file.ad_names.*.rendered[0]}"
   compartment_ocid    = "${var.compartment_ocid}"
   display_name        = "MySQLShellBastion"
-  image_id            = "${var.node_image_id}"
+  image_id            = var.node_image_id == "" ? "${data.oci_core_images.images_for_shape.images[0].id}" : "${var.node_image_id}"
   shape               = "${var.node_shape}"
   label_prefix        = "${var.label_prefix}"
   subnet_id           = "${oci_core_subnet.public.id}"
-  ssh_authorized_keys = "${var.ssh_authorized_keys}"
-  ssh_private_key     = "${var.ssh_private_key}"
-  bastion_private_key = "${var.bastion_private_key}"
+  ssh_authorized_keys = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file("${var.ssh_authorized_keys_path}")
+  ssh_private_key     = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
+  bastion_private_key = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")  
 }
 
 module "mysql-innodb-cluster" {
@@ -193,24 +198,23 @@ module "mysql-innodb-cluster" {
   availability_domains  = "${data.template_file.ad_names.*.rendered}"
   compartment_ocid      = "${var.compartment_ocid}"
   node_display_name     = "${var.node_display_name}"
-  image_id              = "${var.node_image_id}"
+  image_id              = var.node_image_id == "" ? "${data.oci_core_images.images_for_shape.images[0].id}" : "${var.node_image_id}"
   shape                 = "${var.node_shape}"
   label_prefix          = "${var.label_prefix}"
   subnet_id             = "${oci_core_subnet.private.id}"
-  ssh_authorized_keys   = "${var.ssh_authorized_keys}"
-  ssh_private_key       = "${var.ssh_private_key}"
   cluster_name          = "${var.cluster_name}"
   clusteradmin_password = "${var.clusteradmin_password}"
-  bastion_public_key    = "${var.bastion_public_key}"
-  bastion_private_key   = "${var.bastion_private_key}"
+  ssh_authorized_keys   = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file("${var.ssh_authorized_keys_path}")
+  ssh_private_key       = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
+  bastion_private_key   = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")  
+  bastion_public_key    = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file("${var.ssh_authorized_keys_path}")
   bastion_ip            = var.bastion_host == null ? "${module.mysql-shell.public_ip}" : "${var.bastion_host}"
 }
 
 module "mysql-router" {
   source                = "./modules/mysql-router"
-  ssh_private_key       = "${var.ssh_private_key}"
+  ssh_private_key       = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
   mysql_shell_ip        = "${module.mysql-shell.public_ip}"
   clusteradmin_password = "${var.clusteradmin_password}"
   primary_ip            = "${module.mysql-innodb-cluster.private_ip}"
-
 }

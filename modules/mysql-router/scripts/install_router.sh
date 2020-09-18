@@ -2,7 +2,7 @@
 #set -x
 
 rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
-yum install -y mysql-router-community-${mysql_version} 
+yum install -y mysql-router-community-${mysql_version}  --refresh
 
 echo "MySQL Router installed successfully!"
 

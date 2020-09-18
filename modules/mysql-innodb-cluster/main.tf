@@ -45,7 +45,7 @@ resource "oci_core_instance" "TFMysqlInnoDBCluterNode" {
   }
 
   metadata = {
-    ssh_authorized_keys = "${file("${var.bastion_public_key}")}"
+    ssh_authorized_keys = var.bastion_public_key
   }
 
   source_details {
@@ -63,11 +63,11 @@ resource "oci_core_instance" "TFMysqlInnoDBCluterNode" {
       agent       = false
       timeout     = "5m"
       user        = var.vm_user
-      private_key = file("${var.bastion_private_key}")
+      private_key = var.bastion_private_key
 
       bastion_host = var.bastion_ip
       bastion_user = var.vm_user
-      bastion_private_key = file("${var.ssh_private_key}")
+      bastion_private_key = var.ssh_private_key
     }
   }
 
@@ -81,11 +81,11 @@ resource "oci_core_instance" "TFMysqlInnoDBCluterNode" {
       agent       = false
       timeout     = "5m"
       user        = var.vm_user
-      private_key = file("${var.bastion_private_key}")
+      private_key = var.bastion_private_key
 
       bastion_host = var.bastion_ip
       bastion_user = var.vm_user
-      bastion_private_key = file("${var.ssh_private_key}")
+      bastion_private_key = var.ssh_private_key
     }
 
   }
@@ -96,11 +96,11 @@ resource "oci_core_instance" "TFMysqlInnoDBCluterNode" {
       agent       = false
       timeout     = "5m"
       user        = var.vm_user
-      private_key = file("${var.bastion_private_key}")
+      private_key = var.bastion_private_key
 
       bastion_host = var.bastion_ip
       bastion_user = var.vm_user
-      bastion_private_key = file("${var.ssh_private_key}")
+      bastion_private_key = var.ssh_private_key
     }
    
     inline = [
@@ -117,11 +117,11 @@ resource "oci_core_instance" "TFMysqlInnoDBCluterNode" {
       agent       = false
       timeout     = "5m"
       user        = var.vm_user
-      private_key = file("${var.bastion_private_key}")
+      private_key = var.bastion_private_key
 
       bastion_host = var.bastion_ip
       bastion_user = var.vm_user
-      bastion_private_key = file("${var.ssh_private_key}")
+      bastion_private_key = var.ssh_private_key
     }
    
     inline = [

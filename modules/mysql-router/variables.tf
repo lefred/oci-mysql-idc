@@ -3,8 +3,9 @@ variable "mysql_version" {
   default     = "8.0.21"
 }
 
+
 variable "ssh_private_key" {
-  description = "The private key path to access instance. "
+  description = "The private key to access instance. "
   default     = ""
 }
 
@@ -22,7 +23,6 @@ variable "mysql_shell_ip" {
   description = "IP of the MySQL Shell."
   default     = ""
 }
-
 
 variable "clusteradmin_password" {
     description = "Password for the clusteradmin user able to connect from bastion/shell"

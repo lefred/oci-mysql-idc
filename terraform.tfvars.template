@@ -9,15 +9,13 @@ region = "<REPLACE_ME>" # example: eu-frankfurt-1
 
 # Compartment
 compartment_ocid = "<REPLACE_ME>"
-node_image_id = "<REPLACE_ME>" # example: ocid1.image.oc1.eu-frankfurt-1.aaaaaaaalljvzqt3aw7cwpls3oqx7dyrcuntqfj6xn3a2ul3jiuby27lqdxa
-# Instance Configration
+# Keys Configration
 ssh_authorized_keys = "<REPLACE_ME>"
 ssh_private_key = "<REPLACE_ME>"
-# Bastion Keys
-bastion_private_key = "<REPLACE_ME>"
-bastion_public_key = "<REPLACE_ME>"
 
 clusteradmin_password = "<REPLACE_ME>"
 cluster_name = "MyClusterInOCI"
 
 number_of_nodes = "3"
+
+node_shape = "VM.Standard1.1"

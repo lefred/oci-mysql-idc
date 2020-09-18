@@ -13,7 +13,6 @@ locals {
   setup_script_dest = "~/install_shell.sh"
 }
 
-## MYSQL REPLICATION MASTER INSTANCE
 resource "oci_core_instance" "TFMysqlShell" {
   availability_domain = var.availability_domain
   compartment_id      = var.compartment_ocid
@@ -28,7 +27,7 @@ resource "oci_core_instance" "TFMysqlShell" {
   }
 
   metadata = {
-    ssh_authorized_keys = file("${var.ssh_authorized_keys}")
+    ssh_authorized_keys = var.ssh_authorized_keys
   }
 
   source_details {
@@ -46,13 +45,13 @@ resource "oci_core_instance" "TFMysqlShell" {
       agent       = false
       timeout     = "5m"
       user        = var.vm_user
-      private_key = file("${var.ssh_private_key}")
+      private_key = var.ssh_private_key
 
     }
   }
 
   provisioner "file" {
-    source      = var.bastion_private_key
+    content      = var.bastion_private_key
     destination = "/home/${var.vm_user}/.ssh/id_rsa"
 
     connection  {
@@ -61,7 +60,7 @@ resource "oci_core_instance" "TFMysqlShell" {
       agent       = false
       timeout     = "5m"
       user        = var.vm_user
-      private_key = file("${var.ssh_private_key}")
+      private_key = var.ssh_private_key
 
     }
   }
@@ -73,7 +72,7 @@ resource "oci_core_instance" "TFMysqlShell" {
       agent       = false
       timeout     = "5m"
       user        = var.vm_user
-      private_key = file("${var.ssh_private_key}")
+      private_key = var.ssh_private_key
 
     }
    

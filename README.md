@@ -1,4 +1,4 @@
-# oci-mysql
+# oci-mysql-idc
 
 These are Terraform modules that deploy [MySQL](https://www.mysql.com/) on [Oracle Cloud Infrastructure (OCI)](https://cloud.oracle.com/en_US/cloud-infrastructure).
 
@@ -35,13 +35,13 @@ module "mysql-shell" {
   availability_domain = "${data.template_file.ad_names.*.rendered[0]}"
   compartment_ocid    = "${var.compartment_ocid}"
   display_name        = "MySQLShellBastion"
-  image_id            = "${var.node_image_id}"
+  image_id            = var.node_image_id == "" ? "${data.oci_core_images.images_for_shape.images[0].id}" : "${var.node_image_id}"
   shape               = "${var.node_shape}"
   label_prefix        = "${var.label_prefix}"
   subnet_id           = "${oci_core_subnet.public.id}"
-  ssh_authorized_keys = "${var.ssh_authorized_keys}"
-  ssh_private_key     = "${var.ssh_private_key}"
-  bastion_private_key = "${var.bastion_private_key}"
+  ssh_authorized_keys = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file("${var.ssh_authorized_keys_path}")
+  ssh_private_key     = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
+  bastion_private_key = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
 }
 
 module "mysql-innodb-cluster" {
@@ -50,26 +50,25 @@ module "mysql-innodb-cluster" {
   availability_domains  = "${data.template_file.ad_names.*.rendered}"
   compartment_ocid      = "${var.compartment_ocid}"
   node_display_name     = "${var.node_display_name}"
-  image_id              = "${var.node_image_id}"
+  image_id              = var.node_image_id == "" ? "${data.oci_core_images.images_for_shape.images[0].id}" : "${var.node_image_id}"
   shape                 = "${var.node_shape}"
   label_prefix          = "${var.label_prefix}"
   subnet_id             = "${oci_core_subnet.private.id}"
-  ssh_authorized_keys   = "${var.ssh_authorized_keys}"
-  ssh_private_key       = "${var.ssh_private_key}"
   cluster_name          = "${var.cluster_name}"
   clusteradmin_password = "${var.clusteradmin_password}"
-  bastion_public_key    = "${var.bastion_public_key}"
-  bastion_private_key   = "${var.bastion_private_key}"
+  ssh_authorized_keys   = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file("${var.ssh_authorized_keys_path}")
+  ssh_private_key       = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
+  bastion_private_key   = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
+  bastion_public_key    = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file("${var.ssh_authorized_keys_path}")
   bastion_ip            = var.bastion_host == null ? "${module.mysql-shell.public_ip}" : "${var.bastion_host}"
 }
 
 module "mysql-router" {
   source                = "./modules/mysql-router"
-  ssh_private_key       = "${var.ssh_private_key}"
+  ssh_private_key       = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file("${var.ssh_private_key_path}")
   mysql_shell_ip        = "${module.mysql-shell.public_ip}"
   clusteradmin_password = "${var.clusteradmin_password}"
   primary_ip            = "${module.mysql-innodb-cluster.private_ip}"
-
 }
 ```
 
@@ -90,12 +89,9 @@ ssh_authorized_keys | Public SSH keys path to be included in the ~/.ssh/authoriz
 ssh_private_key | The private key path to access instance. 
 private_key_path | The private key path to pem. 
 node_display_name | The name of a MySQL InnoDB Cluster instance. [default: MySQLInnoDBClusterNode]
-node_image_id |The OCID of an image for a node instance to use. 
 node_shape | Instance shape to use for master instance. [default: VM.Standard2.1]
 mysql_root_password | Password of the MySQL 'root@localhost' account.
 bastion_host | IP fo the bastion host [default: null]
-bastion_private_key | Bastion SSH Private Key
-bastion_public_key | Bastion SSH Public Key
 use_AD | Using different Availability Domain, by default use of Fault Domain [default: false]
 number_of_nodes | Number of nodes in the cluster [default: 3]
 clusteradmin_password | Password for the clusteradmin user able to connect from bastion/shell

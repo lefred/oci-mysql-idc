@@ -4,6 +4,7 @@ variable "tenancy_ocid" {
 
 variable "user_ocid" {
   description = "User's OCID"
+  default = ""
 }
 
 variable "compartment_ocid" {
@@ -26,6 +27,7 @@ variable "vcn_cidr" {
 
 variable "fingerprint" {
   description = "Key Fingerprint"
+  default     = ""
 }
 
 variable "dns_label" {
@@ -35,21 +37,6 @@ variable "dns_label" {
 
 variable "label_prefix" {
   description = "To create unique identifier for multiple clusters in a compartment."
-  default     = ""
-}
-
-variable "ssh_authorized_keys" {
-  description = "Public SSH keys path to be included in the ~/.ssh/authorized_keys file for the default user on the instance. "
-  default     = ""
-}
-
-variable "ssh_private_key" {
-  description = "The private key path to access instance. "
-  default     = ""
-}
-
-variable "private_key_path" {
-  description = "The private key path to pem. "
   default     = ""
 }
 
@@ -75,25 +62,12 @@ variable "node_image_id" {
 
 variable "node_shape" {
   description = "Instance shape to use for master instance. "
-  default     = "VM.Standard2.1"
+  default     = "VM.Standard1.1"
 }
 
 variable "mysql_root_password" {
   description = "Password of the MySQL 'root@localhost' account."
   default     = ""
-}
-
-variable "bastion_host" {
-  description = "IP fo the bastion host"
-  default = null
-}
-
-variable "bastion_private_key" {
-  description = "Bastion SSH Private Key"
-}
-
-variable "bastion_public_key" {
-  description = "Bastion SSH Public Key"
 }
 
 variable "use_AD" {
@@ -115,3 +89,24 @@ variable "cluster_name" {
   description = "MySQL InnoDB Cluster Name"
   default = "MyCluster"
 }
+
+variable "bastion_host" {
+  description = "IP fo the bastion host"
+  default = null
+}
+
+variable "ssh_authorized_keys_path" {
+  description = "Public SSH keys path to be included in the ~/.ssh/authorized_keys file for the default user on the instance. DO NOT FILL WHEN USING REOSURCE MANAGER STACK!"
+  default     = ""
+}
+
+variable "ssh_private_key_path" {
+  description = "The private key path to access instance. DO NOT FILL WHEN USING RESOURCE MANAGER STACK!"
+  default     = ""
+}
+
+variable "private_key_path" {
+  description = "The private key path to pem. DO NOT FILL WHEN USING RESOURCE MANAGER STACK! "
+  default     = ""
+}
+
