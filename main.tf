@@ -195,7 +195,8 @@ module "mysql-shell" {
   bastion_private_key = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)  
 }
 
-# for a always free trier without NAT gateway add the following setting:
+# for a always free trier without NAT gateway you must have the following settings:
+# subnet_id             = oci_core_subnet.public.id
 # assign_public_ip      = "true"
 module "mysql-innodb-cluster" {
   number_of_nodes       = var.number_of_nodes
@@ -206,7 +207,7 @@ module "mysql-innodb-cluster" {
   image_id              = var.node_image_id == "" ? data.oci_core_images.images_for_shape.images[0].id : var.node_image_id
   shape                 = var.node_shape
   label_prefix          = var.label_prefix
-  subnet_id             = oci_core_subnet.public.id
+  subnet_id             = oci_core_subnet.private.id
   cluster_name          = var.cluster_name
   clusteradmin_password = var.clusteradmin_password
   ssh_authorized_keys   = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
