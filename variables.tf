@@ -62,7 +62,7 @@ variable "node_image_id" {
 
 variable "node_shape" {
   description = "Instance shape to use for master instance. "
-  default     = "VM.Standard1.1"
+  default     = "VM.Standard.E2.1"
 }
 
 variable "mysql_root_password" {
