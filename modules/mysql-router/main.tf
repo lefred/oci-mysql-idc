@@ -4,10 +4,10 @@ data "template_file" "install_router" {
   template = file("${path.module}/scripts/install_router.sh")
 
   vars = {
-    mysql_version         = "${var.mysql_version}",
-    user                  = "${var.vm_user}"
-    clusteradmin_password = "${var.clusteradmin_password}"
-    primary_ip            = "${var.primary_ip[0]}"
+    mysql_version         = var.mysql_version
+    user                  = var.vm_user
+    clusteradmin_password = var.clusteradmin_password
+    primary_ip            = var.primary_ip[0]
   }
 }
 

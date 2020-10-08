@@ -4,8 +4,8 @@ data "template_file" "install_shell" {
   template = file("${path.module}/scripts/install_shell.sh")
 
   vars = {
-    mysql_version         = "${var.mysql_version}",
-    user                  = "${var.vm_user}"
+    mysql_version         = var.mysql_version
+    user                  = var.vm_user
   }
 }
 
