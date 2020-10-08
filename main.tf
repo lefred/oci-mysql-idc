@@ -195,6 +195,8 @@ module "mysql-shell" {
   bastion_private_key = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)  
 }
 
+# for a always free trier without NAT gateway add the following setting:
+# assign_public_ip      = "true"
 module "mysql-innodb-cluster" {
   number_of_nodes       = var.number_of_nodes
   source                = "./modules/mysql-innodb-cluster"
