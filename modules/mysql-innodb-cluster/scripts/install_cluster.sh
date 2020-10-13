@@ -35,7 +35,7 @@ me=$${hostname: -1}
 if [[ $me -eq 1 ]]
 then
   echo "We are the primary node"
-  mysqlsh  clusteradmin@$instance_ip -- dba create-cluster "${cluster_name}" --localAddress=$instance_ip --autoRejoinTries=3 --password="${clusteradmin_password}"
+  mysqlsh  clusteradmin@$instance_ip --password="${clusteradmin_password}" -- dba create-cluster "${cluster_name}" --localAddress=$instance_ip --autoRejoinTries=3
   echo "MySQL InnoDB Cluster created successfully!"
   primary_ip=$instance_ip
 else
@@ -62,7 +62,7 @@ else
   # try to connect and clone - it may fail if the donor is already busy
   while true
   do
-      mysqlsh clusteradmin@$primary_ip -- cluster add-instance "clusteradmin@$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1 --password="${clusteradmin_password}"
+      mysqlsh clusteradmin@$primary_ip --password="${clusteradmin_password}" -- cluster add-instance "clusteradmin@$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1
       if [[ $? -eq 0 ]]
       then
           echo "Node provisioning done successfully!"
