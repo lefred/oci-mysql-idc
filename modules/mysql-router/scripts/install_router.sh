@@ -6,7 +6,7 @@ yum install -y mysql-router-community-${mysql_version}  --refresh
 
 echo "MySQL Router installed successfully!"
 
-mysqlrouter --bootstrap clusteradmin:${clusteradmin_password}@${primary_ip}:3306 --conf-use-gr-notifications --user mysqlrouter --force
+mysqlrouter --bootstrap clusteradmin@${primary_ip}:3306 --conf-use-gr-notifications --user mysqlrouter --force --password="${clusteradmin_password}"
 
 echo "MySQL Router bootstrapped successfully!"
 
