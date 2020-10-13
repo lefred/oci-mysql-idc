@@ -29,7 +29,7 @@ locals {
 }
 
 ## MYSQL REPLICATION MASTER INSTANCE
-resource "oci_core_instance" "TFMysqlInnoDBCluterNode" {
+resource "oci_core_instance" "TFMysqlInnoDBClusterNode" {
   count               = var.number_of_nodes
   availability_domain = var.use_AD == false ? var.availability_domains[0] : var.availability_domains[count.index%length(var.availability_domains)]
   fault_domain        = var.use_AD == true ? "FAULT-DOMAIN-1" : "FAULT-DOMAIN-${(count.index  % local.fault_domains_per_ad) +1}"
