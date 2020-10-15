@@ -62,7 +62,7 @@ else
   # try to connect and clone - it may fail if the donor is already busy
   while true
   do
-      mysqlsh clusteradmin@$primary_ip --password="${clusteradmin_password}" -- cluster add-instance "clusteradmin@$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1
+      mysqlsh clusteradmin@$primary_ip --password="${clusteradmin_password}" -- cluster add-instance "$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1
       if [[ $? -eq 0 ]]
       then
           echo "Node provisioning done successfully!"
