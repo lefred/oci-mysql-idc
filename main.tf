@@ -163,7 +163,7 @@ resource "oci_core_subnet" "public" {
   compartment_id = var.compartment_ocid
   vcn_id = oci_core_virtual_network.mysqlvcn.id
   route_table_id = oci_core_route_table.public_route_table.id
-  security_list_ids = [oci_core_security_list.public_security_list.id]
+  security_list_ids = var.open_router == false ? [oci_core_security_list.public_security_list.id] : [oci_core_security_list.public_security_list.id, oci_core_security_list.public_router_security_list.id]
   dhcp_options_id = oci_core_virtual_network.mysqlvcn.default_dhcp_options_id
   dns_label = "mysqlpub"
 }

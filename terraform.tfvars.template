@@ -19,3 +19,5 @@ cluster_name = "MyClusterInOCI"
 number_of_nodes = "3"
 
 node_shape = "VM.Standard.E2.1"
+
+#open_router = true

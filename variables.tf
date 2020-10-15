@@ -110,3 +110,8 @@ variable "private_key_path" {
   default     = ""
 }
 
+variable "open_router" {
+  description = "Open MySQL Classic and MySQL X Protocol on the router for the public IP (6446, 6447, 64460, 64470)"
+  default     = false
+}
+  
