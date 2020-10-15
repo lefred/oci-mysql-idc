@@ -14,7 +14,7 @@ do
   sleep 10
 done
 instance_ip=$(ip ad sh | grep ^2: -A 2 | grep inet | awk '{ print $2 }' | cut -d'/' -f1)
-mysqlsh  -- dba configureInstance clusteradmin@$instance_ip --interactive=false --restart=true --password="${clusteradmin_password}"
+mysqlsh -- dba configure-instance clusteradmin@$instance_ip --interactive=false --restart=true --password="${clusteradmin_password}"
 
 # SELinux
 semanage port -a -t mysqld_port_t -p tcp 30000-50000
@@ -35,7 +35,7 @@ me=$${hostname: -1}
 if [[ $me -eq 1 ]]
 then
   echo "We are the primary node"
-  mysqlsh  clusteradmin@$instance_ip --password="${clusteradmin_password}" -- dba create-cluster "${cluster_name}" --localAddress=$instance_ip --autoRejoinTries=3
+  mysqlsh clusteradmin@$instance_ip --password="${clusteradmin_password}" -- dba create-cluster "${cluster_name}" --localAddress=$instance_ip --autoRejoinTries=3
   echo "MySQL InnoDB Cluster created successfully!"
   primary_ip=$instance_ip
 else
@@ -62,7 +62,7 @@ else
   # try to connect and clone - it may fail if the donor is already busy
   while true
   do
-      mysqlsh clusteradmin@$primary_ip --password="${clusteradmin_password}" -- cluster add-instance "$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1
+      echo ${clusteradmin_password} | mysqlsh clusteradmin@$primary_ip --password="${clusteradmin_password}" --passwords-from-stdin -- cluster add-instance "$instance_ip:3306" --localAddress=$instance_ip --recoveryMethod=clone --autoRejoinTries=3 --waitRecovery=1
       if [[ $? -eq 0 ]]
       then
           echo "Node provisioning done successfully!"
@@ -76,6 +76,6 @@ else
 fi   
 # set the name
 echo "Set the instance name to $hostname"
-mysqlsh clusteradmin@$primary_ip --password="${clusteradmin_password}" -- cluster set-instance-option "clusteradmin@$instance_ip:3306" 'label' "$hostname"
+mysqlsh clusteradmin@$primary_ip --password="${clusteradmin_password}" -- cluster set-instance-option "$instance_ip:3306" 'label' "$hostname"
 
 echo "All set for this instance !"
