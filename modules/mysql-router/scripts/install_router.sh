@@ -7,6 +7,7 @@ yum install -y mysql-router-community-${mysql_version}  --refresh
 echo "MySQL Router installed successfully!"
 
 echo ${clusteradmin_password} | mysqlrouter --bootstrap clusteradmin@${primary_ip}:3306 --conf-use-gr-notifications --user mysqlrouter --force 
+sed -i '/auth_cache_refresh_interval=2/c\auth_cache_refresh_interval=60' /etc/mysqlrouter/mysqlrouter.conf
 
 echo "MySQL Router bootstrapped successfully!"
 
@@ -14,6 +15,7 @@ firewall-cmd --zone=public --add-port=6446/tcp --permanent
 firewall-cmd --zone=public --add-port=6447/tcp --permanent
 firewall-cmd --zone=public --add-port=64460/tcp --permanent
 firewall-cmd --zone=public --add-port=64470/tcp --permanent
+firewall-cmd --zone=public --add-port=8443/tcp --permanent
 firewall-cmd --reload
 
 echo "Local Firewall updated"

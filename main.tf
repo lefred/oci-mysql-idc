@@ -108,6 +108,14 @@ resource "oci_core_security_list" "public_router_security_list" {
     protocol = "6"
     source   = "0.0.0.0/0"
   }
+  ingress_security_rules {
+    tcp_options {
+      max = 8443
+      min = 8443
+    }
+    protocol = "6"
+    source   = "0.0.0.0/0"
+  }
 }
 
 
@@ -190,6 +198,7 @@ module "mysql-shell" {
   shape               = var.node_shape
   label_prefix        = var.label_prefix
   subnet_id           = oci_core_subnet.public.id
+  mysql_version       = var.mysql_version
   ssh_authorized_keys = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
   ssh_private_key     = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)
   bastion_private_key = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)  
@@ -215,6 +224,7 @@ module "mysql-innodb-cluster" {
   bastion_private_key   = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)  
   bastion_public_key    = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
   bastion_ip            = var.bastion_host == null ? module.mysql-shell.public_ip : var.bastion_host
+  mysql_version         = var.mysql_version
 }
 
 module "mysql-router" {
@@ -223,4 +233,5 @@ module "mysql-router" {
   mysql_shell_ip        = module.mysql-shell.public_ip
   clusteradmin_password = var.clusteradmin_password
   primary_ip            = module.mysql-innodb-cluster.private_ip
+  mysql_version         = var.mysql_version
 }

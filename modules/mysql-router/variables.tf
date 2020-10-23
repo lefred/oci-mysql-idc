@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql community server."
-  default     = "8.0.21"
+  default     = "8.0.22"
 }
 
 

@@ -40,6 +40,11 @@ variable "label_prefix" {
   default     = ""
 }
 
+variable "mysql_version" {
+  description = "The version of the Mysql community server."
+  default     = "8.0.22"
+}
+
 variable "cluster_subnet_id" {
   description = "List of MySQL Shell subnets' id"
   default     = []
