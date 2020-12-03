@@ -1,7 +1,7 @@
 title: "MySQL InnoDB Cluster"
 stackDescription: "MySQL InnoDB Cluster creation with MySQL Shell and Router for Oracle Developer Live"
-schemaVersion: 1.1.0
-version: "20200918"
+schemaVersion: 1.1.1
+version: "20201203"
 locale: "en"
 
 
@@ -32,6 +32,7 @@ variableGroups:
       - vcn
       - vcn_cidr
       - use_AD
+      - open_router
 
 
 variables:
@@ -64,13 +65,20 @@ variables:
     description: Compartment where you want to create the solution resources
 
   clusteradmin_password:
-    type: string
+    type: password
     required: true
     title: Clusteradmin Password
     description: Password for MySQL InnoDB Cluster adminstrator (clusteradmin)
+    pattern: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\\\"\\\\|,.<>\\/?]).{8,32}$"
   
   use_AD:
     type: boolean
     required: false
     title: Use of Availability Domains
     description: Using Availability Domains instead of Fault Domains
+
+  open_router:
+    type: boolean
+    required: false
+    title: Open MySQL Router to Public Internet
+    description: When enabled you open MySQL Router ports for Classic and X protocol on the Internet  (DANGEROUS)
