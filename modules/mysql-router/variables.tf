@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql community server."
-  default     = "8.0.22"
+  default     = "8.0.32"
 }
 
 
@@ -10,12 +10,12 @@ variable "ssh_private_key" {
 }
 
 variable "vm_user" {
-  description = "The SSH user to connect to the master host."
+  description = "The SSH user to connect to the host."
   default     = "opc"
 }
 
 variable "primary_ip" {
-  description = "IP of the Primary Master."
+  description = "IP of the Primary Instance."
   default     = ""
 }
 

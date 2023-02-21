@@ -23,19 +23,26 @@ data "template_file" "install_cluster" {
 }
 
 locals {
-  setup_script_dest    = "~/install_mysql.sh"
-  cluster_script_dest  = "~/install_cluster.sh"
+  setup_script_dest    = "/home/opc/install_mysql.sh"
+  cluster_script_dest  = "/home/opc/install_cluster.sh"
   fault_domains_per_ad = 3
 }
 
-## MYSQL REPLICATION MASTER INSTANCE
 resource "oci_core_instance" "TFMysqlInnoDBClusterNode" {
   count               = var.number_of_nodes
   availability_domain = var.use_AD == false ? var.availability_domains[0] : var.availability_domains[count.index%length(var.availability_domains)]
   fault_domain        = var.use_AD == true ? "FAULT-DOMAIN-1" : "FAULT-DOMAIN-${(count.index  % local.fault_domains_per_ad) +1}"
   compartment_id      = var.compartment_ocid
   display_name        = "${var.label_prefix}${var.node_display_name}${count.index+1}"
-  shape               = var.shape
+  shape          = var.node_shape
+  dynamic "shape_config" {
+      for_each = local.is_flexible_node_shape ? [1] : []
+      content {
+        memory_in_gbs = var.node_flex_shape_memory
+        ocpus = var.node_flex_shape_ocpus
+      }
+    }
+
 
   create_vnic_details {
     subnet_id        = var.subnet_id

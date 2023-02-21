@@ -74,8 +74,18 @@ variable "node_image_id" {
 }
 
 variable "node_shape" {
-  description = "Instance shape to use for master instance. "
-  default     = "VM.Standard2.1"
+  description = "Instance shape to use for Primary instance. "
+  default     = "VM.Standard.E4.Flex"
+}
+
+variable "node_flex_shape_ocpus" {
+  description = "Flex Instance shape OCPUs"
+  default = 1
+}
+
+variable "node_flex_shape_memory" {
+  description = "Flex Instance shape Memory (GB)"
+  default = 6
 }
 
 variable "mysql_root_password" {

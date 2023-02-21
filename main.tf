@@ -42,7 +42,7 @@ resource "oci_core_route_table" "public_route_table" {
   vcn_id = oci_core_virtual_network.mysqlvcn.id
   display_name = "RouteTableForMySQLPublic"
   route_rules {
-    cidr_block = "0.0.0.0/0"
+    destination = "0.0.0.0/0"
     network_entity_id = oci_core_internet_gateway.internet_gateway.id
   }
 }
@@ -195,8 +195,10 @@ module "mysql-shell" {
   compartment_ocid    = var.compartment_ocid
   display_name        = "MySQLShellBastion"
   image_id            = var.node_image_id == "" ? data.oci_core_images.images_for_shape.images[0].id : var.node_image_id
-  shape               = var.node_shape
   label_prefix        = var.label_prefix
+  node_shape          = var.node_shape
+  node_flex_shape_ocpus    = var.node_flex_shape_ocpus
+  node_flex_shape_memory   = var.node_flex_shape_memory
   subnet_id           = oci_core_subnet.public.id
   mysql_version       = var.mysql_version
   ssh_authorized_keys = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
@@ -214,7 +216,9 @@ module "mysql-innodb-cluster" {
   compartment_ocid      = var.compartment_ocid
   node_display_name     = var.node_display_name
   image_id              = var.node_image_id == "" ? data.oci_core_images.images_for_shape.images[0].id : var.node_image_id
-  shape                 = var.node_shape
+  node_shape            = var.node_shape
+  node_flex_shape_ocpus      = var.node_flex_shape_ocpus
+  node_flex_shape_memory     = var.node_flex_shape_memory
   label_prefix          = var.label_prefix
   subnet_id             = oci_core_subnet.private.id
   cluster_name          = var.cluster_name

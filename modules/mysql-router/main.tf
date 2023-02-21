@@ -12,7 +12,7 @@ data "template_file" "install_router" {
 }
 
 locals {
-  setup_script_dest = "~/install_router.sh"
+  setup_script_dest = "/home/opc/install_router.sh"
 }
 
 resource "null_resource" "TFMysqlRouter" {

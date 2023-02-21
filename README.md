@@ -89,7 +89,7 @@ ssh_authorized_keys | Public SSH keys path to be included in the ~/.ssh/authoriz
 ssh_private_key | The private key path to access instance. 
 private_key_path | The private key path to pem. 
 node_display_name | The name of a MySQL InnoDB Cluster instance. [default: MySQLInnoDBClusterNode]
-node_shape | Instance shape to use for master instance. [default: VM.Standard2.1]
+node_shape | Instance shape to use for Primary instance. [default: VM.Standard.E4.Flex]
 mysql_root_password | Password of the MySQL 'root@localhost' account.
 bastion_host | IP fo the bastion host [default: null]
 use_AD | Using different Availability Domain, by default use of Fault Domain [default: false]

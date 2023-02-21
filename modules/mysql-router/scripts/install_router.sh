@@ -2,6 +2,7 @@
 #set -x
 
 rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+rpm --import https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
 yum install -y mysql-router-community-${mysql_version}  --refresh
 
 echo "MySQL Router installed successfully!"

@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql community server."
-  default     = "8.0.22"
+  default     = "8.0.32"
 }
 
 variable "compartment_ocid" {
@@ -22,9 +22,19 @@ variable "subnet_id" {
   default     = ""
 }
 
-variable "shape" {
-  description = "Instance shape to use for master instance. "
-  default     = "VM.Standard2.1"
+variable "node_shape" {
+  description = "Instance shape to use for Shell instance. "
+  default     = "VM.Standard.E4.Flex"
+}
+
+variable "node_flex_shape_ocpus" {
+  description = "Flex Instance shape OCPUs"
+  default = 1
+}
+
+variable "node_flex_shape_memory" {
+  description = "Flex Instance shape Memory (GB)"
+  default = 6
 }
 
 variable "label_prefix" {
@@ -53,9 +63,25 @@ variable "image_id" {
 }
 
 variable "vm_user" {
-  description = "The SSH user to connect to the master host."
+  description = "The SSH user to connect to the host."
   default     = "opc"
 }
 variable "bastion_private_key" {
   description = "Bastion SSH Private Key"
 }
+
+locals {
+  compute_flexible_shapes = [
+    "VM.Standard.E3.Flex",
+    "VM.Standard.E4.Flex",
+    "VM.Standard.A1.Flex",
+    "VM.Optimized3.Flex",
+    "VM.Standard3.Flex",
+    "VM.Standard4.Flex"
+  ]
+}
+
+locals {
+  is_flexible_node_shape = contains(local.compute_flexible_shapes, var.node_shape)
+}
+
